@@ -1,4 +1,4 @@
-###how to install.
+###How to install.
 https://github.com/ruby/rake
 bundle install rake
 rake 
