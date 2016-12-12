@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+Makefile
+README
+README.md
+ipaddress.py
+setup.cfg
+test_ipaddress.py
+pip-egg-info/ipaddress.egg-info/PKG-INFO
+pip-egg-info/ipaddress.egg-info/SOURCES.txt
+pip-egg-info/ipaddress.egg-info/dependency_links.txt
+pip-egg-info/ipaddress.egg-info/top_level.txt

@@ -1,0 +1,15 @@
+[submodule "folder1_1"]
+	path = folder1_1
+	url = https://murjaxryan:amtrak164@github.com/murjaxryan/folder1_1.git
+[submodule "folder2_1"]
+	path = folder2_1
+	url = https://aigoods:amtrak164@github.com/aigoods/folder2_1.git
+[submodule "folder2_2_1"]
+	path = folder2_2_1
+	url = https://aigoods:amtrak164@github.com/aigoods/folder2_2_1.git
+[submodule "folder2_2"]
+	path = folder2_2
+	url = https://aigoods:amtrak164@github.com/aigoods/folder2_2.git
+[submodule "folder1"]
+	path = folder1
+	url = https://github.com/aigoods/folder1
