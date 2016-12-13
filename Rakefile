@@ -1,29 +1,37 @@
 require 'io/console'
 
-task :submodulize_folder, [:master_repo_dir, :main_github, :secondary_github] do |t, args|
+task :submodulize_folder do
+	puts "Please enter the name of the master folder"
+	master_repo_dir = STDIN.gets
+	puts "Please enter Github account name for master repository"
+	main_github = STDIN.gets
+	puts "Please enter Github account name for junk repositories"
+	secondary_github = STDIN.gets
 	puts "Please enter password for master GitHub account:"
 	main_pass = STDIN.noecho(&:gets)
 	puts "Please enter password for secondary (junk) GitHub account:"
 	secondary_pass = STDIN.noecho(&:gets)
 
-	master = {user: args[:main_github], pass: main_pass.gsub("\n", "")}
-	junk = {user: args[:secondary_github], pass: secondary_pass.gsub("\n", "")}
+	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
+	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
+
+	master_repo_dir = master_repo_dir.gsub("\n", "")
 
 	Dir.mkdir("my_repositories/submodule_builder")
 
-	Dir.chdir("my_repositories/#{args[:master_repo_dir]}") do |x|
+	Dir.chdir("my_repositories/#{master_repo_dir}") do |x|
 		puts `git remote rm origin`
  		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
 	end
 
-	Dir.foreach("my_repositories/#{args[:master_repo_dir]}") do |x|
-		if(File.directory?("my_repositories/#{args[:master_repo_dir]}/#{x}"))
+	Dir.foreach("my_repositories/#{master_repo_dir}") do |x|
+		if(File.directory?("my_repositories/#{master_repo_dir}/#{x}"))
 			# Refactor possible
 			if !(x == ".." || x == "." || x == ".git")
-				 puts `mv my_repositories/#{args[:master_repo_dir]}/#{x} my_repositories/submodule_builder/#{x}`
+				 puts `mv my_repositories/#{master_repo_dir}/#{x} my_repositories/submodule_builder/#{x}`
 				 initialize_submodule("my_repositories/submodule_builder/#{x}", junk)
 
-				 Dir.chdir("my_repositories/#{args[:master_repo_dir]}") do |i|
+				 Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
 				 	puts `git rm --cached -rf #{x}`
