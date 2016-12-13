@@ -12,8 +12,8 @@ In terminal, run rake submodulize_folder.
 ###Map
 l = "leaf"
 
-layer1                                                             dir1(comp 2subSum)
-layer2                                dir1(comp 1 subSum)                 |               dir2(comp 1 subSum)
-layer3                                dir1(comp 2subSum)                                  dir2(l)
-layer4      dir1(comp3 subDir)               |  dir2(comp1 subDir)
-later5  dir1(l)      dir2(l)      dir3(l)    |  dir1
+layer1 |                                                             dir1(comp 2subSum)
+layer2 |                                dir1(comp 1 subSum)                 |               dir2(comp 1 subSum)
+layer3 |                                dir1(comp 2subSum)                                  dir2(l)
+layer4 |      dir1(comp3 subDir)               |  dir2(comp1 subDir)
+later5 |  dir1(l)      dir2(l)      dir3(l)    |  dir1
