@@ -10,13 +10,14 @@ In terminal, run rake submodulize_folder.
 
 
 ###Map
-
+<pre>
 l = "leaf"
-<br>Computations1: bottom directories have standard spacing. Directories above have summation spacing.
-<br>Computations2: start taken as param... end computed then min.
+Computations1: bottom directories have standard spacing. Directories above have summation spacing.
+Computations2: start taken as param... end computed then min.
 
-<br>layer1 |                                                             dir1(comp 2subSum)
-<br>layer2 |                                dir1(comp 1 subSum)                 |               dir2(comp 1 subSum)
-<br>layer3 |                                dir1(comp 2subSum)                  |               dir2(l)
-<br>layer4 |      dir1(comp3 subDir)               |  dir2(comp1 subDir)
-<br>layer5 |  dir1(l)      dir2(l)      dir3(l)    |  dir1
+layer1 |                                                             dir1(comp 2subSum)
+layer2 |                                dir1(comp 1 subSum)                 |               dir2(comp 1 subSum)
+layer3 |                                dir1(comp 2subSum)                  |               dir2(l)
+layer4 |      dir1(comp3 subDir)               |  dir2(comp1 subDir)
+layer5 |  dir1(l)      dir2(l)      dir3(l)    |  dir1
+</pre>
