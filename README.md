@@ -17,6 +17,6 @@ l = "leaf"
 
 <br>layer1 |                                                             dir1(comp 2subSum)
 <br>layer2 |                                dir1(comp 1 subSum)                 |               dir2(comp 1 subSum)
-<br>layer3 |                                dir1(comp 2subSum)                                  dir2(l)
+<br>layer3 |                                dir1(comp 2subSum)                  |                dir2(l)
 <br>layer4 |      dir1(comp3 subDir)               |  dir2(comp1 subDir)
 <br>later5 |  dir1(l)      dir2(l)      dir3(l)    |  dir1
