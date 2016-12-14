@@ -61,19 +61,24 @@ end
 
 def initialize_submodule(folder, junk_account)
 
-
+	# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
 	Dir.chdir("#{folder}") do |i|
 		puts `git init`
 		puts `git add *`
  		puts `git commit -m "Initial Commit"`
+
+ 		# creates empty repo using name of given folder as repo name.
+ 		# folder name is collected by spliting "folder" and string after last "/"
  		puts `curl -u "#{junk_account[:user]}:#{junk_account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
  		puts `git remote rm origin`
- 		puts `git remote add origin https://#{junk_account[:user]}:#{junk_account[:pass]}@github.com/#{junk_account[:user]}/#{folder.split('/')[-1]}.git`
+ 		#command hidden to hide credentials
+ 		 `git remote add origin https://#{junk_account[:user]}:#{junk_account[:pass]}@github.com/#{junk_account[:user]}/#{folder.split('/')[-1]}.git`
  		puts `git push origin master`
 
 	end
 
 	Dir.foreach(folder) do |x|
+		# x is subfolder being operated on
 		if(File.directory?("#{folder}/#{x}"))
 			if !(x == ".." || x == "." || x == ".git")
 				 initialize_submodule("#{folder}/#{x}", junk_account)
