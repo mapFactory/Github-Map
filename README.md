@@ -1,3 +1,7 @@
+###Issues to Look at
+sub folder should not need to have files.
+folder should not need subfolders to say worked successful but nothing was done.
+
 ###How to install.
 https://github.com/ruby/rake<br>
 bundle install rake<br>
@@ -5,6 +9,8 @@ rake
 
 ###How to use.
 Navigate to repository directory in your terminal.<br>
+folder acting upon requires subfolders and files in each folder.
+
 Clone down the master repository you wish to modify into the "my_repositories" folder.<br>
 In terminal, run rake submodulize_folder.
 
