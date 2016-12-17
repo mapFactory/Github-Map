@@ -64,7 +64,15 @@ task :submodulize_folder do
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
 
 	master_repo_dir = master_repo_dir.gsub("\n", "")
-
+	#delete
+	#`curl -u miketestgit01:passwd -X DELETE  https://api.github.com/repos/{miketestgit01}/{TestNew}`
+	#post
+	#`curl -u miketestgit01:passwd -X POST https://api.github.com/user/repos -d '{"name":"TestNew"}'`
+	#workstation
+	#post
+	#puts `curl -u "#{junk_account[:user]}:#{junk_account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
+	
+	
 	Dir.mkdir("my_repositories/submodule_builder")
 
 	Dir.chdir("my_repositories/#{master_repo_dir}") do |x|
