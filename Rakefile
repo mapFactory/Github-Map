@@ -1,4 +1,5 @@
 require 'io/console'
+require 'json'
 
 task :submodulize_folder do
 	puts "Please enter the name of the master folder"
@@ -16,6 +17,7 @@ task :submodulize_folder do
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
 
 	master_repo_dir = master_repo_dir.gsub("\n", "")
+
 	#delete
 	#`curl -u miketestgit01:passwd -X DELETE  https://api.github.com/repos/{miketestgit01}/{TestNew}`
 	#post
@@ -23,10 +25,13 @@ task :submodulize_folder do
 	#workstation
 	#post
 	#puts `curl -u "#{junk_account[:user]}:#{junk_account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
-	
-	
-	Dir.mkdir("my_repositories/submodule_builder")
 
+
+	Dir.chdir("my_repositories/") do |x|
+		puts `cp #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
+	end
+	#Dir.mkdir("my_repositories/submodule_builder")
+    
 	Dir.chdir("my_repositories/#{master_repo_dir}") do |x|
 		puts `git remote rm origin`
  		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
@@ -36,12 +41,23 @@ task :submodulize_folder do
 		if(File.directory?("my_repositories/#{master_repo_dir}/#{x}"))
 			# Refactor possible
 			if !(x == ".." || x == "." || x == ".git")
-				 puts `mv my_repositories/#{master_repo_dir}/#{x} my_repositories/submodule_builder/#{x}`
-				 initialize_submodule("my_repositories/submodule_builder/#{x}", junk)
+				 puts `mv my_repositories/#{master_repo_dir}/#{x} my_repositories/#{x}`#submodule_builder/#{x}`
+				 initialize_submodule("my_repositories/#{x}", junk) #submodule_builder/#{x}", junk)
 
+				 #if fails, check master credentials
 				 Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 end
+
+				 while !Dir.exists?("my_repositories/#{master_repo_dir}/#{x}") do
+				 	recollect_github_credentials(master, 'master')
+				 	Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
+				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 	end
+				 end
+
+				 Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git add *`
 				 	puts `git commit -m "Add submodule folder #{x}"`
@@ -52,7 +68,7 @@ task :submodulize_folder do
 		end
 	end
 
-	puts `sudo rm -rf my_repositories/submodule_builder`
+	# puts `sudo rm -rf my_repositories/submodule_builder`
 
 
 
@@ -75,16 +91,26 @@ def initialize_submodule(folder, junk_account)
 		puts `git add *`
  		puts `git commit -m "Initial Commit"`
 
- 		# creates empty repo using name of given folder as repo name.
- 		# folder name is collected by spliting "folder" and string after last "/"
- 		puts `curl -u "#{junk_account[:user]}:#{junk_account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
+ 		#if fails to create empty repo, check junk credentials
+ 		while !setup_remote_repo(junk_account, folder.split('/')[-1]) do
+ 			junk_account = recollect_github_credentials(junk_account, 'junk')
+ 		end
+ 		#puts `curl -u "#{junk_account[:user]}:#{junk_account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
+
  		puts `git remote rm origin`
  		#command hidden to hide credentials
  		 `git remote add origin https://#{junk_account[:user]}:#{junk_account[:pass]}@github.com/#{junk_account[:user]}/#{folder.split('/')[-1]}.git`
  		puts `git push origin master`
-
 	end
 
+	#This will fail if there are no files or folders
+	#If folder contains nothing, touch a file to it
+
+	if Dir["#{folder}/*"].empty?
+		Dir.chdir("#{folder}") do |i|
+			puts `touch README.md`
+		end
+	end
 	Dir.foreach(folder) do |x|
 		# x is subfolder being operated on
 		if(File.directory?("#{folder}/#{x}"))
@@ -106,4 +132,23 @@ def initialize_submodule(folder, junk_account)
 		end
 		
 	end
+end
+
+def setup_remote_repo(account, name)
+	# creates empty repo using name of given folder as repo name.
+ 		# folder name is collected by spliting "folder" and string after last "/"
+	puts `curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{name}" }'`
+	repo_check = JSON.parse(`curl https://api.github.com/repos/#{account[:user]}/#{name}`)
+	return repo_check["message"].nil?
+end
+
+def recollect_github_credentials(account, type)
+	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
+	puts "Username: "
+	username = STDIN.gets
+	puts "Password: "
+	password = STDIN.noecho(&:gets)
+
+	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
+	return new_account
 end
