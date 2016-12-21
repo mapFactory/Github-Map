@@ -49,6 +49,30 @@ task :create_sub_repos, [:master_repo_dir, :github_user] do |t, args|
 require 'io/console'
 require 'json'
 
+#task created for testing purposes to show deleting of repo.
+task :check_delete_repo do
+	puts "Please enter folder name: "
+	folder = STDIN.gets
+	puts "Please enter username: "
+	username = STDIN.gets
+	puts "Please enter password: "
+	password = STDIN.noecho(&:gets)
+
+	folder = folder.gsub("\n", "")
+	username = username.gsub("\n", "")
+	password = password.gsub("\n", "")
+
+	Dir.chdir("my_repositories/#{folder}") do |x|
+		puts `git init`
+		puts `git add *`
+		puts `git commit -m "Initial Commit"`
+		puts `curl -u "#{username}:#{password}" https://api.github.com/user/repos -d '{ "name": "#{folder}" }'`
+		puts `git remote add origin https://#{username}:#{password}@github.com/#{username}/#{folder}.git`
+		puts `git push origin master`
+		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
+	end
+end
+
 task :submodulize_folder do
 	puts "Please enter the name of the master folder"
 	master_repo_dir = STDIN.gets
