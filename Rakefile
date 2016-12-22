@@ -49,14 +49,63 @@ task :create_sub_repos, [:master_repo_dir, :github_user] do |t, args|
 require 'io/console'
 require 'json'
 
-#task created for testing purposes to show deleting of repo.
-task :check_delete_repo do
+def folderName()
 	puts "Please enter folder name: "
 	folder = STDIN.gets
-	puts "Please enter username: "
+end
+def accountName(str)
+	puts "Please enter #{str}: "
 	username = STDIN.gets
-	puts "Please enter password: "
+end
+def accountPassword(str)
+	puts "Please enter #{str}: "
 	password = STDIN.noecho(&:gets)
+end
+#could be refactored into one method with input parameters
+#... returning and variable assigning figured out in main.
+def checkM(main_github, main_pass)
+	#variables... main_github, main_pass
+	#if
+	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
+		#puts "incorrectMasterAccount or MasterAccount credentials"
+		#masterAccountUserName()
+	 	#masterAccountpassword()
+		#checkM()	
+	#end 
+end
+#variables... secondary_github, secondary_pass
+def checkJ(secondary_github,secondary_pass)
+#if(
+	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
+#		puts "incorrectMasterAccount or MasterAccount credentials"
+#		junkAccountUserName()
+#	 	junkAccountpassword()
+#	 	checkJ()
+#	end 
+end
+
+#does this need a return type? or objects passed by ref into the func.	
+def inputsToUser()#parameters added would be void... hope is pass by ref.(master, junk)
+	main_github 		= accountName("Github account name for master repository")
+	secondary_github 	= accountName("Github account name for junk repositories")
+	main_pass 			= accountPassword("password for master GitHub account")
+	secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
+	#handleFailures...
+	master 	= checkM(main_github, main_pass)
+	junk 	= checkJ(secondary_github,secondary_pass)
+	object = Hash["junk" => junk, "master" => master]	
+	#make this an object#end handleFailures
+end
+
+#task created for testing purposes to show deleting of repo.
+task :check_delete_repo do
+	object = inputsToUser()
+	puts "this is the result number 1#{object['junk']} la la la la la"
+	puts "this is the result number 2#{object['master']} la la la la la"
+	puts "this is the result number 3#{object['master[:user]']}"
+	folder = folderName()
+	username = accountName("username")
+	password = accountPassword("password")
 
 	folder = folder.gsub("\n", "")
 	username = username.gsub("\n", "")
@@ -70,6 +119,7 @@ task :check_delete_repo do
 		puts `git remote add origin https://#{username}:#{password}@github.com/#{username}/#{folder}.git`
 		puts `git push origin master`
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
+	`git remote rm origin`
 	end
 end
 
