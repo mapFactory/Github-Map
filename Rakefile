@@ -45,16 +45,15 @@ def inputsToUser()#parameters added would be void... hope is pass by ref.(master
 	#handleFailures...
 	master 	= checkM(main_github, main_pass)
 	junk 	= checkJ(secondary_github,secondary_pass)
-	object = Hash["junk" => junk, "master" => master]	
+	
+	object = {j: junk, m: master}
 	#make this an object#end handleFailures
 end
-
 #task created for testing purposes to show deleting of repo.
 task :check_delete_repo do
 	object = inputsToUser()
-	puts "this is the result number 1#{object['junk']} la la la la la"
-	puts "this is the result number 2#{object['master']} la la la la la"
-	puts "this is the result number 3#{object['master[:user]']}"
+	#puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
+	
 	folder = folderName()
 	username = accountName("username")
 	password = accountPassword("password")
