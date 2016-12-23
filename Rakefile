@@ -61,6 +61,15 @@ def inputsToUser()#parameters added would be void... hope is pass by ref.(master
 	#end handleFailures
 	object = {j: junk, m: master}
 end
+
+#task used to check validity of Github credentials.
+task :check_credentials do
+	collect_account_credentials('master')
+	collect_account_credentials('junk')
+	check(@master, 'master')
+	check(@junk, 'junk')
+end
+
 #task created for testing purposes to show deleting of repo.
 task :check_delete_repo do
 	folder = folderName()
@@ -183,4 +192,28 @@ def recollect_github_credentials(account, type)
 	password = STDIN.noecho(&:gets)
 	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
 	return new_account
+end
+def collect_account_credentials(type)
+	puts "Username: "
+	username = STDIN.gets
+	puts "Password: "
+	password = STDIN.noecho(&:gets)
+
+	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
+	if type == 'master'
+		@master = new_account
+	else
+		@junk = new_account
+	end
+end
+def check(credentials, type)
+	if !credentials.nil?
+		response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
+		response = JSON.parse(response[response.index('{')..-1])
+
+		if response["message"]
+			puts "Incorrect #{type} account or credentials"
+			check(collect_account_credentials(type), type)
+		end
+	end
 end
