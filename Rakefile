@@ -12,46 +12,6 @@ def accountPassword(str)
 	puts "Please enter #{str}: "
 	password = STDIN.noecho(&:gets)
 end
-def checkM(main_github, main_pass)
-	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")} 
-end
-def checkJ(secondary_github,secondary_pass)
-	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-end
-#does this need a return type? or objects passed by ref into the func.	
-def inputsToUser()#parameters added would be void... hope is pass by ref.(master, junk)
-	main_github 		= accountName("Github account name for master repository")
-	secondary_github 	= accountName("Github account name for junk repositories")
-	main_pass 			= accountPassword("password for master GitHub account")
-	secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
-	#handleFailures...
-	master 	= checkM(main_github, main_pass)
-	junk 	= checkJ(secondary_github,secondary_pass)
-	
-	object = {j: junk, m: master}
-	#make this an object#end handleFailures
-end
-#task created for testing purposes to show deleting of repo.
-task :check_delete_repo do
-	object = inputsToUser()
-	#puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
-	folder = folderName()
-	username = accountName("username")
-	password = accountPassword("password")
-	folder = folder.gsub("\n", "")
-	username = username.gsub("\n", "")
-	password = password.gsub("\n", "")
-	Dir.chdir("my_repositories/#{folder}") do |x|
-		puts `git init`
-		puts `git add *`
-		puts `git commit -m "Initial Commit"`
-		puts `curl -u "#{username}:#{password}" https://api.github.com/user/repos -d '{ "name": "#{folder}" }'`
-		puts `git remote add origin https://#{username}:#{password}@github.com/#{username}/#{folder}.git`
-		puts `git push origin master`
-		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
-		`git remote rm origin`
-	end
-end
 def establish_Origin_repo(folder, account)
 #Dir.chdir("my_repositories/#{master_repo_dir}") do |x|
 		puts `git remote rm origin`
@@ -72,6 +32,55 @@ def create_Repo_From_subFolder(folder, account)
 		establish_Origin_repo(folder, account)
 		puts `git push origin master`
 end
+def checkM(main_github, main_pass) #master account
+	#if(
+	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")} 
+		#)puts "incorrectMasterAccount or MasterAccount credentials"
+		#masterAccountUserName()
+	 	#masterAccountpassword()
+		#checkM()
+	#end
+end
+def checkJ(secondary_github,secondary_pass)#junk account
+	#if(
+	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
+		#)puts "incorrectMasterAccount or MasterAccount credentials"
+		#junkAccountUserName()
+		#junkAccountpassword()
+		#checkJ()
+	#end 
+end
+def inputsToUser()#parameters added would be void... hope is pass by ref.(master, junk)
+	main_github 		= accountName("Github account name for master repository")
+	secondary_github 	= accountName("Github account name for junk repositories")
+	main_pass 			= accountPassword("password for master GitHub account")
+	secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
+	#handleFailures...
+	master 	= checkM(main_github, main_pass)
+	junk 	= checkJ(secondary_github,secondary_pass)
+	#end handleFailures
+	object = {j: junk, m: master}
+end
+#task created for testing purposes to show deleting of repo.
+task :check_delete_repo do
+	folder = folderName()
+	object = inputsToUser()
+######username = accountName("username")
+######password = accountPassword("password")
+	folder = folder.gsub("\n", "")
+	#puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
+	username = object[:m][:user]
+	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
+######username = username.gsub("\n", "")
+######password = password.gsub("\n", "")
+	Dir.chdir("my_repositories/#{folder}") do |x|
+		create_Repo_From_subFolder(folder, object[:m])
+		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
+		#`git remote rm origin`##establish_Origin_repo is now handling this section.
+	end
+end
+
+
 task :deprecated_submodulize_folder do
 	object = inputsToUser()
 	puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
