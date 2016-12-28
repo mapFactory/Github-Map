@@ -217,3 +217,79 @@ def check(credentials, type)
 		end
 	end
 end
+#tests Methods
+def doStuff(folder, master, junk)
+	master_repo_dir = folder.gsub("\n", "")#master_repo_dir = folder.gsub("\n", "")
+	#Dir.chdir("Testing/") do |x|
+	#	puts `cp #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
+	#end
+	#Dir.mkdir("Testing//submodule_builder")
+	Dir.chdir("Testing//#{master_repo_dir}") do |x|
+		#puts `git remote rm origin`
+ 		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
+	end
+	Dir.foreach("Testing//#{master_repo_dir}") do |x|
+		if(File.directory?("Testing//#{master_repo_dir}/#{x}"))
+			# Refactor possible
+			if !(x == ".." || x == "." || x == ".git")
+				 puts `mv Testing//#{master_repo_dir}/#{x} Testing//#{x}`#submodule_builder/#{x}`
+				 initialize_submodule("Testing//#{x}", junk) #submodule_builder/#{x}", junk)
+				 #if fails, check master credentials
+				 Dir.chdir("Testing//#{master_repo_dir}") do |i|
+				 	puts `git rm --cached -rf #{x}`
+				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 end
+				 while !Dir.exists?("Testing//#{master_repo_dir}/#{x}") do
+				 	recollect_github_credentials(master, 'master')
+				 	Dir.chdir("Testing//#{master_repo_dir}") do |i|
+				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 	end
+				 end
+				 Dir.chdir("Testing//#{master_repo_dir}") do |i|
+				 	puts `git rm --cached -rf #{x}`
+				 	puts `git add *`
+				 	puts `git commit -m "Add submodule folder #{x}"`
+				 	puts `git push origin master`
+				 end
+			end
+		end
+	end
+end
+
+#tests Tasks
+task :test_submodulize_folder do
+	folder1				= "1_test_CheckReadmeAndSubdirs"#folder1
+	folder2				= "2_test_MasterReponoSub"
+	folder3				= "e_test_NoReadme"
+	main_github 		= "miketestgit02"
+	secondary_github	= "miketestgit02"
+	main_pass 			= "qzfreetf59im"
+	secondary_pass 		= "qzfreetf59im"
+	 
+	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
+	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
+	doStuff(folder1, master, junk)
+	
+end
+
+#task used to check validity of Github credentials.
+task :test_check_credentials do
+puts "test currently does nothing, code has been commented out. Modify to make this test work."
+#	collect_account_credentials('master')
+#	collect_account_credentials('junk')
+#	check(@master, 'master')
+#	check(@junk, 'junk')
+end
+#task created for testing purposes to show deleting of repo.
+task :test_check_delete_repo do
+	folder = folderName()#hardcode...
+	object = inputsToUser()#hardcode...
+	folder = folder.gsub("\n", "")
+	username = object[:m][:user]
+	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
+	Dir.chdir("Testing//#{folder}") do |x|
+		create_Repo_From_subFolder(folder, object[:m])
+		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
+		#`git remote rm origin`##establish_Origin_repo is now handling this section.
+	end
+end
