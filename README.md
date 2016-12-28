@@ -27,3 +27,12 @@ layer3 |                           dir1(comp 2subSum)             |             
 layer4 |      dir1(comp3 subDir)            |  dir2(comp1 subDir)
 layer5 |  dir1(l)      dir2(l)      dir3(l) |  dir1
 </pre>
+
+###layout
+<pre>
+submodulizeFolder()
+  eachSubDir()
+     initializeSubmodule()
+      eachSubDir()
+        initializeSubmodule()
+</pre>
