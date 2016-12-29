@@ -4,33 +4,60 @@ require 'json'
 def folderName() puts "Please enter folder name: "; folder = STDIN.gets; end #called specifically in task
 def accountName(str) puts "Please enter #{str}: "; username = STDIN.gets; end #inputsToUser
 def accountPassword(str) puts "Please enter #{str}: "; password = STDIN.noecho(&:gets); end #inputsToUser
-
+def recollect_github_credentials(account, type)
+	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
+	puts "Username: ";username = STDIN.gets
+	puts "Password: ";password = STDIN.noecho(&:gets)
+	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
+	return new_account
+end
+def check(credentials, type)
+	#if !credentials.nil?
+		response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
+		response = JSON.parse(response[response.index('{')..-1])
+		if response["message"]
+			puts "Incorrect #{type} account or credentials"
+			check(recollect_account_credentials(credentials, type), type)
+		end
+	#end
+end
+#task used to check validity of Github credentials.
+task :check_credentials do
+	# collect_account_credentials('master')
+	# collect_account_credentials('junk')
+	# check(@master, 'master')
+	# check(@junk, 'junk')
+end
+#task created for testing purposes to show deleting of repo.
+task :check_delete_repo do
+	folder = folderName()
+	object = inputsToUser()#check is inside inputs()
+	folder = folder.gsub("\n", "")
+	username = object[:m][:user]
+	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
+	Dir.chdir("my_repositories/#{folder}") do |x|
+		create_Repo_From_subFolder(folder, object[:m])
+		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
+	end
+end
 def inputsToUser()#parameters added would be void... hope is pass by ref.(master, junk)
 	main_github 		= accountName("Github account name for master repository")
 	secondary_github 	= accountName("Github account name for junk repositories")
 	main_pass 			= accountPassword("password for master GitHub account")
 	secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
 	#handleFailures...
-	# master 	= checkM(main_github, main_pass)
-	# junk 	= checkJ(secondary_github,secondary_pass)
+	# master 	= check(main_github, main_pass)
+	# junk 	= check(secondary_github,secondary_pass)
 	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
 	#end handleFailures
 	object = {j: junk, m: master}
 end
-
-def checkM(main_github, main_pass) #master account
-	#if(
-	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")} 
-		#)puts "incorrectMasterAccount or MasterAccount credentials";
-		#masterAccountUserName();masterAccountpassword();checkM()#end
-end
-def checkJ(secondary_github,secondary_pass)#junk account
-	#if(
-	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-		#)puts "incorrectMasterAccount or MasterAccount credentials";
-		#junkAccountUserName();junkAccountpassword();checkJ()
-	#end 
+def setup_remote_repo(account, name)
+	# posts an empty repo to github.
+	puts `curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{name}" }'`
+	repo_check = JSON.parse(`curl https://api.github.com/repos/#{account[:user]}/#{name}`)
+	return repo_check["message"].nil?
 end
 def establish_Origin_repo(folder, account)
 		#do not puts anything that shows credentials
@@ -45,65 +72,8 @@ def create_Repo_From_subFolder(folder, account)
 		puts `git push origin master`
 end
 
-#task used to check validity of Github credentials.
-task :check_credentials do
-	collect_account_credentials('master')
-	collect_account_credentials('junk')
-	check(@master, 'master')
-	check(@junk, 'junk')
-end
-#task created for testing purposes to show deleting of repo.
-task :check_delete_repo do
-	folder = folderName()
-	object = inputsToUser()
-	folder = folder.gsub("\n", "")
-	username = object[:m][:user]
-	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
-	Dir.chdir("my_repositories/#{folder}") do |x|
-		create_Repo_From_subFolder(folder, object[:m])
-		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
-	end
-end
-def doStuff(environmentFolder, folder, master, junk)
-	master_repo_dir = folder.gsub("\n", "")
-	Dir.chdir("#{environmentFolder}/") do |x|
-		puts `cp -r #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
-	end
-	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
-		#puts `git remote rm origin`
- 		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
-	end
-	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
-		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
-			# Refactor possible
-			if !(x == ".." || x == "." || x == ".git")
-				 initialize_submodule("#{environmentFolder}/#{master_repo_dir}/#{x}", junk)
-				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 end
-				 while !Dir.exists?("#{environmentFolder}/#{master_repo_dir}/#{x}") do
-				 	recollect_github_credentials(master, 'master')
-				 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 	end
-				 end
-				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git add *`
-				 	puts `git commit -m "Add submodule folder #{x}"`
-				 	puts `git push origin master`
-				 end
-			end
-		end
-	end
-end
-task :submodulize_folder do
-	folder = folderName()
-	object = inputsToUser()
-	doStuff('my_repositories',folder, object[:m], object[:j])
 
-end
+
 def initialize_submodule(folder, junk_account)
 	# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
 	Dir.chdir("#{folder}") do |i|
@@ -111,9 +81,10 @@ def initialize_submodule(folder, junk_account)
 		puts `git add *`
  		puts `git commit -m "Initial Commit"`
  		#when are  checks are complete ... delete  this.#if fails to create empty repo, check junk credentials
- 		while !setup_remote_repo(junk_account, folder.split('/')[-1]) do
- 			junk_account = recollect_github_credentials(junk_account, 'junk')
- 		end
+ 		# while !setup_remote_repo(junk_account, folder.split('/')[-1]) do
+ 		# 	junk_account = recollect_github_credentials(junk_account, 'junk')
+ 		# end
+ 		setup_remote_repo(junk_account, folder.split('/')[-1])
  		puts `git remote rm origin`
  		#puts not used, so command hidden to hide credentials
  		 `git remote add origin https://#{junk_account[:user]}:#{junk_account[:pass]}@github.com/#{junk_account[:user]}/#{folder.split('/')[-1]}.git`
@@ -144,38 +115,48 @@ def initialize_submodule(folder, junk_account)
 		end
 	end
 end
-def setup_remote_repo(account, name)
-	# posts an empty repo to github.
-	puts `curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{name}" }'`
-	repo_check = JSON.parse(`curl https://api.github.com/repos/#{account[:user]}/#{name}`)
-	return repo_check["message"].nil?
-end
-def recollect_github_credentials(account, type)
-	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
-	puts "Username: ";username = STDIN.gets
-	puts "Password: ";password = STDIN.noecho(&:gets)
-	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
-	return new_account
-end
-def collect_account_credentials(type)
-	puts "Username: ";username = STDIN.gets;
-	puts "Password: ";password = STDIN.noecho(&:gets);
-	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
-	if type == 'master'
-		@master = new_account
-	else
-		@junk = new_account
+def doStuff(environmentFolder, folder, master, junk)
+	master_repo_dir = folder.gsub("\n", "")
+	Dir.chdir("#{environmentFolder}/") do |x|
+		puts `cp -r #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
 	end
-end
-def check(credentials, type)
-	if !credentials.nil?
-		response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
-		response = JSON.parse(response[response.index('{')..-1])
-		if response["message"]
-			puts "Incorrect #{type} account or credentials"
-			check(collect_account_credentials(type), type)
+	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
+		#puts `git remote rm origin`
+ 		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
+	end
+	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
+		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
+			# Refactor possible
+			if !(x == ".." || x == "." || x == ".git")
+				 initialize_submodule("#{environmentFolder}/#{master_repo_dir}/#{x}", junk)
+				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
+				 	puts `git rm --cached -rf #{x}`
+				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 end
+				 # while !Dir.exists?("#{environmentFolder}/#{master_repo_dir}/#{x}") do
+				 # 	recollect_github_credentials(master, 'master')
+				 # 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
+				 # 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 # 	end
+				 # end
+				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
+				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+				 	end
+				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
+				 	puts `git rm --cached -rf #{x}`
+				 	puts `git add *`
+				 	puts `git commit -m "Add submodule folder #{x}"`
+				 	puts `git push origin master`
+				 end
+			end
 		end
 	end
+end
+task :submodulize_folder do
+	folder = folderName()
+	object = inputsToUser()
+	doStuff('my_repositories',folder, object[:m], object[:j])
+
 end
 #tests Methods
 #tests Tasks
