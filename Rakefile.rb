@@ -1,17 +1,12 @@
 require 'io/console'
 require 'json'
-def folderName()
-	puts "Please enter folder name: "
-	folder = STDIN.gets
-end
-def accountName(str)
-	puts "Please enter #{str}: "
-	username = STDIN.gets
-end
-def accountPassword(str)
-	puts "Please enter #{str}: "
-	password = STDIN.noecho(&:gets)
-end
+
+def folderName() puts "Please enter folder name: "; folder = STDIN.gets; end
+def accountName(str) puts "Please enter #{str}: "; username = STDIN.gets; end
+def accountPassword(str) puts "Please enter #{str}: "; password = STDIN.noecho(&:gets); end
+
+
+
 def establish_Origin_repo(folder, account)
 #Dir.chdir("my_repositories/#{master_repo_dir}") do |x|
 		puts `git remote rm origin`
@@ -22,9 +17,7 @@ end
 #create subFolder as a Repo
 #1_deliverable... is create repo on Github1
 def create_Repo_From_subFolder(folder, account)
-		puts `git init`
-		puts `git add *`
- 		puts `git commit -m "Initial Commit"`
+		puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
 
  		# creates empty repo using name of given folder as repo name.
  		# folder name is collected by spliting "folder" and string after last "/"
@@ -56,8 +49,10 @@ def inputsToUser()#parameters added would be void... hope is pass by ref.(master
 	main_pass 			= accountPassword("password for master GitHub account")
 	secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
 	#handleFailures...
-	master 	= checkM(main_github, main_pass)
-	junk 	= checkJ(secondary_github,secondary_pass)
+	# master 	= checkM(main_github, main_pass)
+	# junk 	= checkJ(secondary_github,secondary_pass)
+	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
+	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
 	#end handleFailures
 	object = {j: junk, m: master}
 end
@@ -88,45 +83,34 @@ task :check_delete_repo do
 		#`git remote rm origin`##establish_Origin_repo is now handling this section.
 	end
 end
-
-
-task :deprecated_submodulize_folder do
-	object = inputsToUser()
-	puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
-end
-task :submodulize_folder do
-#	object = inputsToUser()
-#	puts "#{object['junk']}"
-#	puts "#{object['master[:user]']}"	
-	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
-	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-	master_repo_dir = master_repo_dir.gsub("\n", "")
-	Dir.chdir("my_repositories/") do |x|
-		puts `cp #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
-	end
-	#Dir.mkdir("my_repositories/submodule_builder")
-	Dir.chdir("my_repositories/#{master_repo_dir}") do |x|
-		puts `git remote rm origin`
+def doStuff(environmentFolder, folder, master, junk)
+	master_repo_dir = folder.gsub("\n", "")#master_repo_dir = folder.gsub("\n", "")
+	#Dir.chdir("#{environmentFolder}/") do |x|
+	#	puts `cp #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
+	#end
+	#Dir.mkdir("#{environmentFolder}/submodule_builder")
+	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
+		#puts `git remote rm origin`
  		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
 	end
-	Dir.foreach("my_repositories/#{master_repo_dir}") do |x|
-		if(File.directory?("my_repositories/#{master_repo_dir}/#{x}"))
+	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
+		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
 			# Refactor possible
 			if !(x == ".." || x == "." || x == ".git")
-				 puts `mv my_repositories/#{master_repo_dir}/#{x} my_repositories/#{x}`#submodule_builder/#{x}`
-				 initialize_submodule("my_repositories/#{x}", junk) #submodule_builder/#{x}", junk)
+				 #puts `mv #{environmentFolder}/#{master_repo_dir}/#{x} #{environmentFolder}/#{x}`#submodule_builder/#{x}`
+				 initialize_submodule("#{environmentFolder}/#{master_repo_dir}/#{x}", junk) #submodule_builder/#{x}", junk)
 				 #if fails, check master credentials
-				 Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
+				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
 				 end
-				 while !Dir.exists?("my_repositories/#{master_repo_dir}/#{x}") do
+				 while !Dir.exists?("#{environmentFolder}/#{master_repo_dir}/#{x}") do
 				 	recollect_github_credentials(master, 'master')
-				 	Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
+				 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
 				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
 				 	end
 				 end
-				 Dir.chdir("my_repositories/#{master_repo_dir}") do |i|
+				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git add *`
 				 	puts `git commit -m "Add submodule folder #{x}"`
@@ -135,7 +119,15 @@ task :submodulize_folder do
 			end
 		end
 	end
-	# puts `sudo rm -rf my_repositories/submodule_builder`
+end
+task :submodulize_folder do
+#	object = inputsToUser()
+#	puts "#{object['junk']}"
+#	puts "#{object['master[:user]']}"
+	folder = folderName()
+	object = inputsToUser()
+	doStuff('my_repositories',folder, object[:m], object[:j])
+
 end
 def initialize_submodule(folder, junk_account)
 	# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
@@ -218,60 +210,24 @@ def check(credentials, type)
 	end
 end
 #tests Methods
-def doStuff(folder, master, junk)
-	master_repo_dir = folder.gsub("\n", "")#master_repo_dir = folder.gsub("\n", "")
-	#Dir.chdir("Testing/") do |x|
-	#	puts `cp #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
-	#end
-	#Dir.mkdir("Testing//submodule_builder")
-	Dir.chdir("Testing//#{master_repo_dir}") do |x|
-		#puts `git remote rm origin`
- 		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
-	end
-	Dir.foreach("Testing//#{master_repo_dir}") do |x|
-		if(File.directory?("Testing//#{master_repo_dir}/#{x}"))
-			# Refactor possible
-			if !(x == ".." || x == "." || x == ".git")
-				 puts `mv Testing//#{master_repo_dir}/#{x} Testing//#{x}`#submodule_builder/#{x}`
-				 initialize_submodule("Testing//#{x}", junk) #submodule_builder/#{x}", junk)
-				 #if fails, check master credentials
-				 Dir.chdir("Testing//#{master_repo_dir}") do |i|
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 end
-				 while !Dir.exists?("Testing//#{master_repo_dir}/#{x}") do
-				 	recollect_github_credentials(master, 'master')
-				 	Dir.chdir("Testing//#{master_repo_dir}") do |i|
-				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 	end
-				 end
-				 Dir.chdir("Testing//#{master_repo_dir}") do |i|
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git add *`
-				 	puts `git commit -m "Add submodule folder #{x}"`
-				 	puts `git push origin master`
-				 end
-			end
-		end
-	end
-end
-
 #tests Tasks
 task :test_submodulize_folder do
-	folder1				= "1_test_CheckReadmeAndSubdirs"#folder1
+	folder1				= "new_folder"
+	#folder1			= "1_test_CheckReadmeAndSubdirs"#folder1
 	folder2				= "2_test_MasterReponoSub"
 	folder3				= "e_test_NoReadme"
 	main_github 		= "miketestgit02"
 	secondary_github	= "miketestgit02"
 	main_pass 			= "qzfreetf59im"
 	secondary_pass 		= "qzfreetf59im"
-	 
 	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-	doStuff(folder1, master, junk)
-	
+	doStuff('Testing', folder1, master, junk)
 end
-
+task :Test_printInputs do
+	object = inputsToUser()
+	puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
+end
 #task used to check validity of Github credentials.
 task :test_check_credentials do
 puts "test currently does nothing, code has been commented out. Modify to make this test work."
@@ -287,7 +243,7 @@ task :test_check_delete_repo do
 	folder = folder.gsub("\n", "")
 	username = object[:m][:user]
 	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
-	Dir.chdir("Testing//#{folder}") do |x|
+	Dir.chdir("Testing/#{folder}") do |x|
 		create_Repo_From_subFolder(folder, object[:m])
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
 		#`git remote rm origin`##establish_Origin_repo is now handling this section.
