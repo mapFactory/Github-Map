@@ -69,15 +69,13 @@ def check(credentials, type)
 		end
 	#end
 end
-#task used to check validity of Github credentials.
-task :check_credentials do
+task :check_credentials do #task used to check validity of Github credentials.
 	# collect_account_credentials('master')
 	# collect_account_credentials('junk')
 	# check(@master, 'master')
 	# check(@junk, 'junk')
 end
-#task created for testing purposes to show deleting of repo.
-task :check_delete_repo do
+task :check_delete_repo do #task created for testing purposes to show deleting of repo.
 	folder = folderName()
 	object = inputsToUser()#check is inside inputs()
 	folder = folder.gsub("\n", "")
@@ -175,6 +173,7 @@ def doStuff(environmentFolder, folder, master, junk)
 	end
 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
 		#puts `git remote rm origin`
+		`git init`
  		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
 	end
 	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
@@ -185,17 +184,6 @@ def doStuff(environmentFolder, folder, master, junk)
 				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 end
-				 # while !Dir.exists?("#{environmentFolder}/#{master_repo_dir}/#{x}") do
-				 # 	recollect_github_credentials(master, 'master')
-				 # 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 # 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 # 	end
-				 # end
-				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 		puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 	end
-				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
 				 	puts `git rm --cached -rf #{x}`
 				 	puts `git add *`
 				 	puts `git commit -m "Add submodule folder #{x}"`
