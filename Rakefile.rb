@@ -117,33 +117,33 @@ def create_Repo_From_subFolder(folder, account)
 		establish_Origin_repo(folder, account)
 		puts `git push origin master`
 end
-
-
-
-def initialize_submodule(folder, junk_account)
-	# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-	Dir.chdir("#{folder}") do |i|
-		puts `git init`
-		puts `git add *`
- 		puts `git commit -m "Initial Commit"`
- 		#when are  checks are complete ... delete  this.#if fails to create empty repo, check junk credentials
- 		# while !setup_remote_repo(junk_account, folder.split('/')[-1]) do
- 		# 	junk_account = recollect_github_credentials(junk_account, 'junk')
- 		# end
- 		setup_remote_repo(junk_account, folder.split('/')[-1])
- 		puts `git remote rm origin`
- 		#puts not used, so command hidden to hide credentials
- 		 `git remote add origin https://#{junk_account[:user]}:#{junk_account[:pass]}@github.com/#{junk_account[:user]}/#{folder.split('/')[-1]}.git`
- 		puts `git push origin master`
-	end
-	#this should be a method... above in this method needs refactor first.
-	#This will fail if there are no files or folders
-	#If folder contains nothing, touch a file to it
+def commit_andPush()
+	puts `git rm --cached -rf #{x}`
+	puts `git add *`
+	puts `git commit -m "Add submodule folder #{x}"`
+	puts `git push origin master`
+end
+def removeFiles_addSubmodule(junk)
+	puts `git rm --cached -rf #{x}`
+	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+end
+def touchwithReadme(folder)
 	if Dir["#{folder}/*"].empty?
 		Dir.chdir("#{folder}") do |i|
 			puts `touch README.md`
 		end
 	end
+end
+def initialize_submodule(folder, junk_account)
+	# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+	Dir.chdir("#{folder}") do |i|
+		create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
+		#the above method calls establish_Origin repo.
+	end
+	#this should be a method... above in this method needs refactor first.
+	#This will fail if there are no files or folders
+	#If folder contains nothing, touch a file to it
+	touchwithReadme(folder)
 	Dir.foreach(folder) do |x|
 		# x is subfolder being operated on
 		if(File.directory?("#{folder}/#{x}"))
@@ -203,7 +203,7 @@ end
 #tests Tasks
 task :test_submodulize_folder do
 	folder1				= "new_folder"
-	#folder1			= "1_test_CheckReadmeAndSubdirs"#folder1
+	folder1			= "1_test_CheckReadmeAndSubdirs"#folder1
 	folder2				= "2_test_MasterReponoSub"
 	folder3				= "e_test_NoReadme"
 	main_github 		= "miketestgit02"
