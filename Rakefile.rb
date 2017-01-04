@@ -117,13 +117,13 @@ def create_Repo_From_subFolder(folder, account)
 		establish_Origin_repo(folder, account)
 		puts `git push origin master`
 end
-def commit_andPush()
+def commit_andPush(x)
 	puts `git rm --cached -rf #{x}`
 	puts `git add *`
 	puts `git commit -m "Add submodule folder #{x}"`
 	puts `git push origin master`
 end
-def removeFiles_addSubmodule(junk)
+def removeFiles_addSubmodule(x, junk)
 	puts `git rm --cached -rf #{x}`
 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
 end
@@ -150,12 +150,8 @@ def initialize_submodule(folder, junk_account)
 			if !(x == ".." || x == "." || x == ".git")
 				 initialize_submodule("#{folder}/#{x}", junk_account)
 				 Dir.chdir("#{folder}") do |i|
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git submodule add https://github.com/#{junk_account[:user]}/#{x}`
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git add *`
-				 	puts `git commit -m "Add submodule folder #{x}"`
-				 	puts `git push origin master`
+				 	removeFiles_addSubmodule(x, junk_account)
+				 	commit_andPush(x)
 				 end
 			end
 		end
@@ -182,12 +178,8 @@ def doStuff(environmentFolder, folder, master, junk)
 			if !(x == ".." || x == "." || x == ".git")
 				 initialize_submodule("#{environmentFolder}/#{master_repo_dir}/#{x}", junk)
 				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
-				 	puts `git rm --cached -rf #{x}`
-				 	puts `git add *`
-				 	puts `git commit -m "Add submodule folder #{x}"`
-				 	puts `git push origin master`
+				 	removeFiles_addSubmodule(x, junk)
+				 	commit_andPush(x)
 				 end
 			end
 		end
@@ -197,12 +189,11 @@ task :submodulize_folder do
 	folder = folderName()
 	object = inputsToUser()
 	doStuff('my_repositories',folder, object[:m], object[:j])
-
 end
 #tests Methods
 #tests Tasks
 task :test_submodulize_folder do
-	folder1				= "new_folder"
+	#folder1				= "new_folder"
 	folder1			= "1_test_CheckReadmeAndSubdirs"#folder1
 	folder2				= "2_test_MasterReponoSub"
 	folder3				= "e_test_NoReadme"
