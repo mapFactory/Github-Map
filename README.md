@@ -6,9 +6,6 @@ task :default do
   puts 'Default task'
 end
 </pre>
-sub folder should not need to have files.
-folder should not need subfolders to say worked successful but nothing was done.
-
 ###How to install.
 https://github.com/ruby/rake<br>
 bundle install rake<br>
