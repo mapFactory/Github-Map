@@ -1,4 +1,11 @@
 ###Issues to Look at
+<pre>
+import 'another_rakefile'
+
+task :default do
+  puts 'Default task'
+end
+</pre>
 sub folder should not need to have files.
 folder should not need subfolders to say worked successful but nothing was done.
 
