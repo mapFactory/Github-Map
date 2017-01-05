@@ -113,15 +113,15 @@ end
 def create_Repo_From_subFolder(folder, account)
 		puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
  		# creates empty repo using name of given folder as repo name.# folder name is collected by spliting "folder" and string after last "/"
- 		puts `curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
+ 		`curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
 		establish_Origin_repo(folder, account)
-		puts `git push origin master`
+		`git push origin master --quiet`
 end
 def commit_andPush(x)
 	puts `git rm --cached -rf #{x}`
 	puts `git add *`
-	puts `git commit -m "Add submodule folder #{x}"`
-	puts `git push origin master`
+	`git commit -m "Add submodule folder #{x}"`
+	`git push origin master --quiet`
 end
 def removeFiles_addSubmodule(x, junk)
 	puts `git rm --cached -rf #{x}`
