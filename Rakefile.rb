@@ -169,6 +169,7 @@ def initialize_submodule(folder, junk_account)
 end
 def doStuff(environmentFolder, folder, master, junk)
 	master_repo_dir = folder.gsub("\n", "")
+	folder_count = 0
 	Dir.chdir("#{environmentFolder}/") do |x|
 		puts `cp -r #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
 	end
@@ -181,6 +182,7 @@ def doStuff(environmentFolder, folder, master, junk)
 		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
 			# Refactor possible
 			if !(x == ".." || x == "." || x == ".git")
+				folder_count += 1
 				 initialize_submodule("#{environmentFolder}/#{master_repo_dir}/#{x}", junk)
 				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
 				 	removeFiles_addSubmodule(x, junk)
@@ -188,6 +190,9 @@ def doStuff(environmentFolder, folder, master, junk)
 				 end
 			end
 		end
+	end
+	if folder_count == 0
+		puts "No subfolders found in this repository. No actions were taken."
 	end
 end
 task :submodulize_folder do
