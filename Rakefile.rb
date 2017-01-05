@@ -17,7 +17,9 @@ def check(credentials, type)
 		response = JSON.parse(response[response.index('{')..-1])
 		if response["message"]
 			puts "Incorrect #{type} account or credentials"
-			check(recollect_account_credentials(credentials, type), type)
+			check(recollect_github_credentials(credentials, type), type)
+		else
+			return credentials
 		end
 	#end
 end
@@ -48,6 +50,9 @@ def inputsToUser()#parameters added would be void... hope is pass by ref.(master
 	# junk 	= check(secondary_github,secondary_pass)
 	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
+
+	master = check(master, 'master')
+	junk = check(junk, 'junk')
 	#end handleFailures
 	object = {j: junk, m: master}
 end
@@ -150,6 +155,8 @@ task :test_submodulize_folder do
 	secondary_pass 		= "qzfreetf59im"
 	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
+	master = check(master, 'master')
+	junk = check(junk, 'junk')
 	doStuff('Testing', folder1, master, junk)
 end
 task :Test_printInputs do
