@@ -36,3 +36,4 @@ submodulizeFolder()
       eachSubDir()
         initializeSubmodule()
 </pre>
+Copyright (c) 2017, Ryan Murphy and Michael Dimmitt
