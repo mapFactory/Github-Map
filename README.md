@@ -34,17 +34,17 @@ layer5 |  dir1(l)      dir2(l)      dir3(l) |  dir1
 
 ###layout
 <pre>
-submodulizeFolder()
-  eachSubDir()
-     initializeSubmodule()
-      eachSubDir()
-        initializeSubmodule()
-*****************************************************        
           initializeSubmoduleLogic()
               createRepo()...
               touchWithReadme()
                 navToSubFolder()
                   initialize()#not a folder produces the exit procedure... 
                   ...removeFiles();commit_andPush();
+*******************************************************************************************
+submodulizeFolder()
+  eachSubDir()
+     initializeSubmodule()
+      eachSubDir()
+        initializeSubmodule()
 </pre>
 Copyright (c) 2017, Ryan Murphy and Michael Dimmitt
