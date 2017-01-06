@@ -39,5 +39,12 @@ submodulizeFolder()
      initializeSubmodule()
       eachSubDir()
         initializeSubmodule()
+*****************************************************        
+          initializeSubmoduleLogic()
+              createRepo()...
+              touchWithReadme()
+                navToSubFolder()
+                  initialize()#not a folder produces the exit procedure... 
+                  ...removeFiles();commit_andPush();
 </pre>
 Copyright (c) 2017, Ryan Murphy and Michael Dimmitt
