@@ -70,9 +70,7 @@ def removeFiles_addSubmodule(x, junk)
 end
 def touchwithReadme(folder)
 	if Dir["#{folder}/*"].empty?
-		Dir.chdir("#{folder}") do |i|
-			puts `touch README.md`
-		end
+		puts `touch README.md`
 	end
 end
 def Backup(environmentFolder, folder)
@@ -86,8 +84,8 @@ def initialize_submodule(folder, junk_account)
     Dir.chdir("#{folder}") do |i|
         create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
         #the above method calls establish_Origin repo.
+	touchwithReadme(folder)
     end
-    touchwithReadme(folder)
     Dir.foreach(folder) do |x|
         # x is subfolder being operated on
         if(File.directory?("#{folder}/#{x}"))
