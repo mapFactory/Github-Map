@@ -75,52 +75,33 @@ def touchwithReadme(folder)
 		end
 	end
 end
-def initialize_submodule(folder, junk_account)
-	# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-	Dir.chdir("#{folder}") do |i|
-		create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
-		#the above method calls establish_Origin repo.
-	end
-	#this should be a method... above in this method needs refactor first.
-	#This will fail if there are no files or folders
-	#If folder contains nothing, touch a file to it
-	touchwithReadme(folder)
-	Dir.foreach(folder) do |x|
-		# x is subfolder being operated on
-		if(File.directory?("#{folder}/#{x}"))
-			if !(x == ".." || x == "." || x == ".git")
-				 initialize_submodule("#{folder}/#{x}", junk_account)
-				 Dir.chdir("#{folder}") do |i|
-				 	removeFiles_addSubmodule(x, junk_account)
-				 	commit_andPush(x)
-				 end
-			end
-		end
-	end
+def Backup(environmentFolder, folder)
+    Dir.chdir("#{environmentFolder}/") do |x|
+        puts `cp -r #{folder} backup_#{folder}` # Copy never to be touched till end
+    end
 end
-def doStuff(environmentFolder, folder, master, junk)
-	master_repo_dir = folder.gsub("\n", "")
-	folder_count = 0
-	Dir.chdir("#{environmentFolder}/") do |x|
-		puts `cp -r #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
-	end
-	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
-		create_Repo_From_subFolder(folder, master)
-	end
-	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
-		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
-			# Refactor possible
-			if !(x == ".." || x == "." || x == ".git")
-				folder_count += 1
-				 initialize_submodule("#{environmentFolder}/#{master_repo_dir}/#{x}", junk)
-				 Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |i|
-				 	removeFiles_addSubmodule(x, junk)
-				 	commit_andPush(x)
-				 end
-			end
-		end
-	end
-	if folder_count == 0
-		puts "No subfolders found in this repository. No actions were taken."
-	end
+def initialize_submodule(folder, junk_account)
+    # folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+    folder_count = 0;
+    Dir.chdir("#{folder}") do |i|
+        create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
+        #the above method calls establish_Origin repo.
+    end
+    touchwithReadme(folder)
+    Dir.foreach(folder) do |x|
+        # x is subfolder being operated on
+        if(File.directory?("#{folder}/#{x}"))
+            if !(x == ".." || x == "." || x == ".git")
+                folder_count += 1
+                initialize_submodule("#{folder}/#{x}", junk_account)
+                Dir.chdir("#{folder}") do |i|
+                    removeFiles_addSubmodule(x, junk_account)
+                    commit_andPush(x)
+                end
+            end
+        end
+    end
+    if folder_count == 0
+        return 1;
+    end
 end
