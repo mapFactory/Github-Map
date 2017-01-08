@@ -121,9 +121,7 @@ def doStuff(environmentFolder, folder, master, junk)
 		puts `cp -r #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
 	end
 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
-		#puts `git remote rm origin`
-		`git init`
- 		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
+		create_Repo_From_subFolder(folder, master)
 	end
 	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
 		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
