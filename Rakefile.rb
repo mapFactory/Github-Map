@@ -30,11 +30,22 @@ task :test_submodulize_folder do
     object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
     #doStuff('Testing', folder1, object[:m], object[:j])
     Backup('Testing', folder1)
-    folder_count = initialize_submodule("Testing/#{folder1}", object[:j])
+    folder_count = initialize_submodule("Testing/#{folder1}", object[:j], 0)
     if (folder_count == 1)
         puts "No subfolders found in this repository. No actions were taken."
     end
 end
+
+task :test_delete_all do
+	#folder1				= "new_folder"
+	folder1	= "1_test_CheckReadmeAndSubdirs";folder2 = "2_test_MasterReponoSub";folder3	= "e_test_NoReadme";
+	object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
+    folder_count = initialize_submodule("Testing/#{folder1}", object[:j], 1)
+    if (folder_count == 1)
+        puts "No subfolders found in this repository. No actions were taken."
+    end
+end
+
 task :test_check_delete_repo do
 	folder = folderName()
 	object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")#check is inside inputs()
