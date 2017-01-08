@@ -48,35 +48,9 @@ task :create_sub_repos, [:master_repo_dir, :github_user] do |t, args|
 =======
 require 'io/console'
 require 'json'
+require_relative 'methods.rb'
 
-def folderName() puts "Please enter folder name: "; folder = STDIN.gets; end #called specifically in task
-def accountName(str) puts "Please enter #{str}: "; username = STDIN.gets; end #inputsToUser
-def accountPassword(str) puts "Please enter #{str}: "; password = STDIN.noecho(&:gets); end #inputsToUser
-def recollect_github_credentials(account, type)
-	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
-	puts "Username: ";username = STDIN.gets
-	puts "Password: ";password = STDIN.noecho(&:gets)
-	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
-	return new_account
-end
-def check(credentials, type)
-	#if !credentials.nil?
-		response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
-		response = JSON.parse(response[response.index('{')..-1])
-		if response["message"]
-			puts "Incorrect #{type} account or credentials"
-			check(recollect_github_credentials(credentials, type), type)
-		else
-			return credentials
-		end
-	#end
-end
-task :check_credentials do #task used to check validity of Github credentials.
-	# collect_account_credentials('master')
-	# collect_account_credentials('junk')
-	# check(@master, 'master')
-	# check(@junk, 'junk')
-end
+#Live tasks
 task :check_delete_repo do #task created for testing purposes to show deleting of repo.
 	folder = folderName()
 	object = inputsToUser()#check is inside inputs()
@@ -88,6 +62,7 @@ task :check_delete_repo do #task created for testing purposes to show deleting o
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
 	end
 end
+<<<<<<< HEAD
 def inputsToUser()#parameters added would be void... hope is pass by ref.(master, junk)
 	main_github 		= accountName("Github account name for master repository")
 	secondary_github 	= accountName("Github account name for junk repositories")
@@ -174,9 +149,7 @@ def doStuff(environmentFolder, folder, master, junk)
 		puts `cp -r #{master_repo_dir} backup_#{master_repo_dir}` # Copy never to be touched till end
 	end
 	Dir.chdir("#{environmentFolder}/#{master_repo_dir}") do |x|
-		#puts `git remote rm origin`
-		`git init`
- 		puts `git remote add origin https://#{master[:user]}:#{master[:pass]}@github.com/#{master[:user]}/#{x.split('/')[-1]}.git`
+		create_Repo_From_subFolder(folder, master)
 	end
 	Dir.foreach("#{environmentFolder}/#{master_repo_dir}") do |x|
 		if(File.directory?("#{environmentFolder}/#{master_repo_dir}/#{x}"))
@@ -195,50 +168,31 @@ def doStuff(environmentFolder, folder, master, junk)
 		puts "No subfolders found in this repository. No actions were taken."
 	end
 end
+=======
+>>>>>>> 0b409d0... Reduce Rakefile to tasks only
 task :submodulize_folder do
 	folder = folderName()
 	object = inputsToUser()
 	doStuff('my_repositories',folder, object[:m], object[:j])
 end
-#tests Methods
-#tests Tasks
+#test Tasks
+task :Test_printInputs do object = inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
 task :test_submodulize_folder do
 	#folder1				= "new_folder"
 	folder1			= "1_test_CheckReadmeAndSubdirs"#folder1
 	folder2				= "2_test_MasterReponoSub"
 	folder3				= "e_test_NoReadme"
-	main_github 		= "miketestgit02"
-	secondary_github	= "miketestgit02"
-	main_pass 			= "qzfreetf59im"
-	secondary_pass 		= "qzfreetf59im"
-	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
-	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-	master = check(master, 'master')
-	junk = check(junk, 'junk')
-	doStuff('Testing', folder1, master, junk)
+	object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
+	doStuff('Testing', folder1, object[:m], object[:j])
 end
-task :Test_printInputs do
-	object = inputsToUser()
-	puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"
-end
-#task used to check validity of Github credentials.
-task :test_check_credentials do
-puts "test currently does nothing, code has been commented out. Modify to make this test work."
-#	collect_account_credentials('master')
-#	collect_account_credentials('junk')
-#	check(@master, 'master')
-#	check(@junk, 'junk')
-end
-#task created for testing purposes to show deleting of repo.
 task :test_check_delete_repo do
-	folder = folderName()#hardcode...
-	object = inputsToUser()#hardcode...
+	folder = folderName()
+	object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")#check is inside inputs()
 	folder = folder.gsub("\n", "")
 	username = object[:m][:user]
 	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
-	Dir.chdir("Testing/#{folder}") do |x|
+	Dir.chdir("my_repositories/#{folder}") do |x|
 		create_Repo_From_subFolder(folder, object[:m])
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
-		#`git remote rm origin`##establish_Origin_repo is now handling this section.
 	end
 end
