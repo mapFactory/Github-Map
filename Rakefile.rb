@@ -40,9 +40,11 @@ task :test_delete_all do
 	#folder1				= "new_folder"
 	folder1	= "1_test_CheckReadmeAndSubdirs";folder2 = "2_test_MasterReponoSub";folder3	= "e_test_NoReadme";
 	object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
-    folder_count = initialize_submodule("Testing/#{folder1}", object[:j], 1)
+	folder_count = initialize_submodule("Testing/#{folder1}", object[:j], 1)
     if (folder_count == 1)
         puts "No subfolders found in this repository. No actions were taken."
+    else
+	Delete_Backup('Testing', folder1)
     end
 end
 
