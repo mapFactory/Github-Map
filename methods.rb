@@ -78,23 +78,32 @@ def Backup(environmentFolder, folder)
         puts `cp -r #{folder} backup_#{folder}` # Copy never to be touched till end
     end
 end
-def initialize_submodule(folder, junk_account)
+def delete_initialize_submodule(folder, account)
+	username = account[:user];password = account[:pass];#puts password puts username
+	`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder.split('/')[-1]}}`;#puts folder.split('/')[-1];
+end
+def initialize_submodule(folder, junk_account, del)
     # folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
     folder_count = 0;
     Dir.chdir("#{folder}") do |i|
+    	if(del == 1) then delete_initialize_submodule(folder, junk_account);
+		else
         create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
         #the above method calls establish_Origin repo.
-	touchwithReadme(folder)
+		touchwithReadme(folder)
+		end
     end
     Dir.foreach(folder) do |x|
         # x is subfolder being operated on
         if(File.directory?("#{folder}/#{x}"))
             if !(x == ".." || x == "." || x == ".git")
                 folder_count += 1
-                initialize_submodule("#{folder}/#{x}", junk_account)
-                Dir.chdir("#{folder}") do |i|
-                    removeFiles_addSubmodule(x, junk_account)
-                    commit_andPush(x)
+                initialize_submodule("#{folder}/#{x}", junk_account, del)
+                if(del == 1) then else
+                	Dir.chdir("#{folder}") do |i|
+                    	removeFiles_addSubmodule(x, junk_account)
+                    	commit_andPush(x)
+                	end
                 end
             end
         end
