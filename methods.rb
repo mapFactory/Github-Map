@@ -23,17 +23,12 @@ def inputsToUser(main_github = nil, secondary_github = nil, main_pass = nil, sec
 	if main_github.nil?
 		main_github 		= accountName("Github account name for master repository")
 		secondary_github 	= accountName("Github account name for junk repositories")
-		main_passs 			= accountPassword("password for master GitHub account")
+		main_pass 			= accountPassword("password for master GitHub account")
 		secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
 	end
-	#handleFailures...
-	# master 	= check(main_github, main_pass)
-	# junk 	= check(secondary_github,secondary_pass)
-	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
 	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-	master = check(master, 'master')
-	junk = check(junk, 'junk')
-	#end handleFailures
+	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
+	master = check(master, 'master');junk = check(junk, 'junk') #future: 'object ='
 	object = {j: junk, m: master}
 end#parameters added would be void... hope is pass by ref.(master, junk)
 def setup_remote_repo(account, name)
