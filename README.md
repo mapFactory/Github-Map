@@ -31,7 +31,67 @@ layer3 |                           dir1(comp 2subSum)             |             
 layer4 |      dir1(comp3 subDir)            |  dir2(comp1 subDir)
 layer5 |  dir1(l)      dir2(l)      dir3(l) |  dir1
 </pre>
-
+####AlternateMap (this is possibly most efficient) ... the structure comes from 
+credit for design goes to http://mama.indstate.edu/users/ice/tree/
+<pre>
+│   │       ├── re.pyc
+│   │       ├── site-packages
+│   │       │   ├── easy_install.py
+│   │       │   ├── easy_install.pyc
+│   │       │   ├── external
+│   │       │   │   ├── __init__.py
+│   │       │   │   ├── __init__.pyc
+│   │       │   │   ├── d3
+│   │       │   │   │   ├── d3.js
+│   │       │   │   │   ├── d3.min.js
+│   │       │   │   │   └── package.js
+│   │       │   │   ├── dagre
+│   │       │   │   │   └── dist
+│   │       │   │   │       ├── dagre.core.js
+│   │       │   │   │       └── dagre.core.min.js
+│   │       │   │   ├── eigen_archive
+│   │       │   │   │   ├── Eigen
+│   │       │   │   │   │   ├── CMakeLists.txt
+│   │       │   │   │   │   ├── Cholesky
+│   │       │   │   │   │   ├── CholmodSupport
+│   │       │   │   │   │   ├── Core
+│   │       │   │   │   │   ├── Dense
+│   │       │   │   │   │   ├── Eigen
+│   │       │   │   │   │   ├── Eigenvalues
+│   │       │   │   │   │   ├── Geometry
+│   │       │   │   │   │   ├── Householder
+│   │       │   │   │   │   ├── IterativeLinearSolvers
+│   │       │   │   │   │   ├── Jacobi
+│   │       │   │   │   │   ├── LU
+│   │       │   │   │   │   ├── MetisSupport
+│   │       │   │   │   │   ├── OrderingMethods
+│   │       │   │   │   │   ├── PaStiXSupport
+│   │       │   │   │   │   ├── PardisoSupport
+│   │       │   │   │   │   ├── QR
+│   │       │   │   │   │   ├── QtAlignedMalloc
+│   │       │   │   │   │   ├── SPQRSupport
+│   │       │   │   │   │   ├── SVD
+│   │       │   │   │   │   ├── Sparse
+│   │       │   │   │   │   ├── SparseCholesky
+│   │       │   │   │   │   ├── SparseCore
+│   │       │   │   │   │   ├── SparseLU
+│   │       │   │   │   │   ├── SparseQR
+│   │       │   │   │   │   ├── StdDeque
+│   │       │   │   │   │   ├── StdList
+│   │       │   │   │   │   ├── StdVector
+│   │       │   │   │   │   ├── SuperLUSupport
+│   │       │   │   │   │   ├── UmfPackSupport
+│   │       │   │   │   │   └── src
+│   │       │   │   │   │       ├── Cholesky
+│   │       │   │   │   │       │   ├── LDLT.h
+│   │       │   │   │   │       │   ├── LLT.h
+│   │       │   │   │   │       │   └── LLT_LAPACKE.h
+│   │       │   │   │   │       ├── CholmodSupport
+│   │       │   │   │   │       │   └── CholmodSupport.h
+│   │       │   │   │   │       ├── Core
+│   │       │   │   │   │       │   ├── Array.h
+│   │       │   │   │   │       │   ├── ArrayBase.h
+</pre>
 ###layout
 <pre>
           initializeSubmoduleLogic()
