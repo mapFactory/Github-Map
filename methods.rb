@@ -73,25 +73,29 @@ def delete_online_repo(folder, account)
 	username = account[:user];password = account[:pass];
 	`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder.split('/')[-1]}}`;#puts folder.split('/')[-1];
 end
-def initialize_submodule(folder, junk_account, del)
-    folder_count = 0;
+def surface_folder_level(folder, junk_account, del)
     Dir.chdir("#{folder}") do |i| #current_directory()
     	if(del == 1) then delete_online_repo(folder, junk_account);
-		else
-        create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
-        #the above method calls establish_Origin repo.
+	else
+        	create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
+        	#the above method calls establish_Origin repo.
 		touchwithReadme(folder)
-		end
-    end
+end end end
+def sub_folder_level(folder, junk_account, del, folder_count)
     Dir.foreach(folder) do |x| if(File.directory?("#{folder}/#{x}")) then if !(x == ".." || x == "." || x == ".git") #sub_directories()
-                folder_count += 1
-                initialize_submodule("#{folder}/#{x}", junk_account, del)
-                if(del == 1) then else
-                	Dir.chdir("#{folder}") do |i|
-                    	removeFiles_addSubmodule(x, junk_account)
-                    	commit_andPush(x)
+        folder_count += 1
+        initialize_submodule("#{folder}/#{x}", junk_account, del)
+            if(del == 1) then 
+	    else
+            	Dir.chdir("#{folder}") do |i|
+                removeFiles_addSubmodule(x, junk_account)
+                commit_andPush(x)
     end end end end end
-    if folder_count == 0
-        return 1;
-    end 
+	return folder_count
 end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+def initialize_submodule(folder, junk_account, del)
+	folder_count = 0;
+	surface_folder_level(folder, junk_account, del)
+	folder_count = sub_folder_level(folder, junk_account, del, folder_count)
+	if folder_count == 0 return 1; end 
+end
