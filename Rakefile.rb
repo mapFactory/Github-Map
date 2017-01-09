@@ -98,7 +98,7 @@ def initialize_submodule(folder, object, del, type)
                 initialize_submodule("#{folder}/#{x}", object, del, 'junk')
                 if(del == 1) then else
                 	Dir.chdir("#{folder}") do |i|
-                    	removeFiles_addSubmodule(x, account)
+                    	removeFiles_addSubmodule(x, object[:j])
                     	commit_andPush(x)
     end end end end end
     if folder_count == 0
