@@ -49,6 +49,10 @@ task :create_sub_repos, [:master_repo_dir, :github_user] do |t, args|
 require 'io/console'
 require 'json'
 require_relative 'methods.rb'
+task :test_inputs do
+	object = inputsToUser
+	puts object
+end
 #Live tasks
 task :check_delete_repo do #task created for testing purposes to show deleting of repo.
 	folder = folderName()
