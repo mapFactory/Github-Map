@@ -1,4 +1,4 @@
-def folderName() puts "Please enter folder name: "; folder = STDIN.gets; end #called specifically in task
+def folderName() puts "Please enter folder name: "; folder = STDIN.gets; folder = folder.gsub("\n", ""); end #called specifically in task
 def accountName(str) puts "Please enter #{str}: "; username = STDIN.gets; end #inputsToUser
 def accountPassword(str) puts "Please enter #{str}: "; password = STDIN.noecho(&:gets); end #inputsToUser
 def recollect_github_credentials(account, type)
@@ -17,7 +17,6 @@ def check(credentials, type)
 		else
 			return credentials
 		end
-	#end
 end	#if !credentials.nil?
 def inputsToUser(main_github = nil, secondary_github = nil, main_pass = nil, secondary_pass = nil)
 	if main_github.nil?
@@ -26,8 +25,8 @@ def inputsToUser(main_github = nil, secondary_github = nil, main_pass = nil, sec
 		main_pass 			= accountPassword("password for master GitHub account")
 		secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
 	end
-	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
 	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
+	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
 	master = check(master, 'master');junk = check(junk, 'junk') #future: 'object ='
 	object = {j: junk, m: master}
 end#parameters added would be void... hope is pass by ref.(master, junk)
@@ -73,29 +72,31 @@ def delete_online_repo(folder, account)
 	username = account[:user];password = account[:pass];
 	`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder.split('/')[-1]}}`;#puts folder.split('/')[-1];
 end
-def surface_folder_level(folder, junk_account, del)
-    Dir.chdir("#{folder}") do |i| #current_directory()
-    	if(del == 1) then delete_online_repo(folder, junk_account);
-	else
-        	create_Repo_From_subFolder(folder, junk_account)#still need setup remote repo... check on a json.
-        	#the above method calls establish_Origin repo.
+def surface_folder_level(folder, account, del)
+	Dir.chdir("#{folder}") do |i| #current_directory()
+    	if(del == 1) then delete_online_repo(folder, account);
+		else
+        create_Repo_From_subFolder(folder, account)#still need setup remote repo... check on a json.
+        #the above method calls establish_Origin repo.
 		touchwithReadme(folder)
-end end end
-def sub_folder_level(folder, junk_account, del, folder_count)
-    Dir.foreach(folder) do |x| if(File.directory?("#{folder}/#{x}")) then if !(x == ".." || x == "." || x == ".git") #sub_directories()
-        folder_count += 1
-        initialize_submodule("#{folder}/#{x}", junk_account, del)
-            if(del == 1) then 
-	    else
-            	Dir.chdir("#{folder}") do |i|
-                removeFiles_addSubmodule(x, junk_account)
-                commit_andPush(x)
-    end end end end end
-	return folder_count
-end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-def initialize_submodule(folder, junk_account, del)
-	folder_count = 0;
-	surface_folder_level(folder, junk_account, del)
-	folder_count = sub_folder_level(folder, junk_account, del, folder_count)
-	if folder_count == 0 return 1; end 
+		end
+    end
 end
+def sub_folder_level(folder, object, del, folder_count)
+    Dir.foreach(folder) do |x| if(File.directory?("#{folder}/#{x}")) then if !(x == ".." || x == "." || x == ".git") #sub_directories()
+                folder_count += 1
+                initialize_submodule("#{folder}/#{x}", object, del, 'junk')
+                if(del == 1) then else
+                	Dir.chdir("#{folder}") do |i|
+                    	removeFiles_addSubmodule(x, object[:j])
+                    	commit_andPush(x)
+    end end end end end
+end
+def initialize_submodule(folder, object, del, type)
+    folder_count = 0;
+    if (type == "master") then puts "object master used"; account = object[:m];
+    else puts "object junk used";account = object[:j]; end
+    surface_folder_level(folder, account, del)
+    folder_count = sub_folder_level(folder, object, del, folder_count)
+    if folder_count == 0 then return 1; end 
+end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
