@@ -18,6 +18,21 @@ folder acting upon requires subfolders and files in each folder.
 Clone down the master repository you wish to modify into the "my_repositories" folder.<br>
 In terminal, run rake submodulize_folder.
 
+###layout
+<pre>
+          initializeSubmoduleLogic()
+              createRepo()...
+              touchWithReadme()
+                navToSubFolder()
+                  initialize()#not a folder produces the exit procedure... 
+                  ...removeFiles();commit_andPush();
+*******************************************************************************************
+submodulizeFolder()
+  eachSubDir()
+     initializeSubmodule()
+      eachSubDir()
+        initializeSubmodule()
+</pre>
 
 ###Map
 <pre>
@@ -45,42 +60,10 @@ credit for design goes to http://mama.indstate.edu/users/ice/tree/
 │   │       │   │   │   ├── d3.js
 │   │       │   │   │   ├── d3.min.js
 │   │       │   │   │   └── package.js
-│   │       │   │   ├── dagre
-│   │       │   │   │   └── dist
-│   │       │   │   │       ├── dagre.core.js
-│   │       │   │   │       └── dagre.core.min.js
 │   │       │   │   ├── eigen_archive
 │   │       │   │   │   ├── Eigen
 │   │       │   │   │   │   ├── CMakeLists.txt
 │   │       │   │   │   │   ├── Cholesky
-│   │       │   │   │   │   ├── CholmodSupport
-│   │       │   │   │   │   ├── Core
-│   │       │   │   │   │   ├── Dense
-│   │       │   │   │   │   ├── Eigen
-│   │       │   │   │   │   ├── Eigenvalues
-│   │       │   │   │   │   ├── Geometry
-│   │       │   │   │   │   ├── Householder
-│   │       │   │   │   │   ├── IterativeLinearSolvers
-│   │       │   │   │   │   ├── Jacobi
-│   │       │   │   │   │   ├── LU
-│   │       │   │   │   │   ├── MetisSupport
-│   │       │   │   │   │   ├── OrderingMethods
-│   │       │   │   │   │   ├── PaStiXSupport
-│   │       │   │   │   │   ├── PardisoSupport
-│   │       │   │   │   │   ├── QR
-│   │       │   │   │   │   ├── QtAlignedMalloc
-│   │       │   │   │   │   ├── SPQRSupport
-│   │       │   │   │   │   ├── SVD
-│   │       │   │   │   │   ├── Sparse
-│   │       │   │   │   │   ├── SparseCholesky
-│   │       │   │   │   │   ├── SparseCore
-│   │       │   │   │   │   ├── SparseLU
-│   │       │   │   │   │   ├── SparseQR
-│   │       │   │   │   │   ├── StdDeque
-│   │       │   │   │   │   ├── StdList
-│   │       │   │   │   │   ├── StdVector
-│   │       │   │   │   │   ├── SuperLUSupport
-│   │       │   │   │   │   ├── UmfPackSupport
 │   │       │   │   │   │   └── src
 │   │       │   │   │   │       ├── Cholesky
 │   │       │   │   │   │       │   ├── LDLT.h
@@ -92,19 +75,5 @@ credit for design goes to http://mama.indstate.edu/users/ice/tree/
 │   │       │   │   │   │       │   ├── Array.h
 │   │       │   │   │   │       │   ├── ArrayBase.h
 </pre>
-###layout
-<pre>
-          initializeSubmoduleLogic()
-              createRepo()...
-              touchWithReadme()
-                navToSubFolder()
-                  initialize()#not a folder produces the exit procedure... 
-                  ...removeFiles();commit_andPush();
-*******************************************************************************************
-submodulizeFolder()
-  eachSubDir()
-     initializeSubmodule()
-      eachSubDir()
-        initializeSubmodule()
-</pre>
-Copyright (c) 2017, Ryan Murphy and Michael Dimmitt
+
+<b>Copyright (c) 2017, Ryan Murphy and Michael Dimmitt</b>
