@@ -45,42 +45,10 @@ credit for design goes to http://mama.indstate.edu/users/ice/tree/
 │   │       │   │   │   ├── d3.js
 │   │       │   │   │   ├── d3.min.js
 │   │       │   │   │   └── package.js
-│   │       │   │   ├── dagre
-│   │       │   │   │   └── dist
-│   │       │   │   │       ├── dagre.core.js
-│   │       │   │   │       └── dagre.core.min.js
 │   │       │   │   ├── eigen_archive
 │   │       │   │   │   ├── Eigen
 │   │       │   │   │   │   ├── CMakeLists.txt
 │   │       │   │   │   │   ├── Cholesky
-│   │       │   │   │   │   ├── CholmodSupport
-│   │       │   │   │   │   ├── Core
-│   │       │   │   │   │   ├── Dense
-│   │       │   │   │   │   ├── Eigen
-│   │       │   │   │   │   ├── Eigenvalues
-│   │       │   │   │   │   ├── Geometry
-│   │       │   │   │   │   ├── Householder
-│   │       │   │   │   │   ├── IterativeLinearSolvers
-│   │       │   │   │   │   ├── Jacobi
-│   │       │   │   │   │   ├── LU
-│   │       │   │   │   │   ├── MetisSupport
-│   │       │   │   │   │   ├── OrderingMethods
-│   │       │   │   │   │   ├── PaStiXSupport
-│   │       │   │   │   │   ├── PardisoSupport
-│   │       │   │   │   │   ├── QR
-│   │       │   │   │   │   ├── QtAlignedMalloc
-│   │       │   │   │   │   ├── SPQRSupport
-│   │       │   │   │   │   ├── SVD
-│   │       │   │   │   │   ├── Sparse
-│   │       │   │   │   │   ├── SparseCholesky
-│   │       │   │   │   │   ├── SparseCore
-│   │       │   │   │   │   ├── SparseLU
-│   │       │   │   │   │   ├── SparseQR
-│   │       │   │   │   │   ├── StdDeque
-│   │       │   │   │   │   ├── StdList
-│   │       │   │   │   │   ├── StdVector
-│   │       │   │   │   │   ├── SuperLUSupport
-│   │       │   │   │   │   ├── UmfPackSupport
 │   │       │   │   │   │   └── src
 │   │       │   │   │   │       ├── Cholesky
 │   │       │   │   │   │       │   ├── LDLT.h
