@@ -18,6 +18,21 @@ folder acting upon requires subfolders and files in each folder.
 Clone down the master repository you wish to modify into the "my_repositories" folder.<br>
 In terminal, run rake submodulize_folder.
 
+###layout
+<pre>
+          initializeSubmoduleLogic()
+              createRepo()...
+              touchWithReadme()
+                navToSubFolder()
+                  initialize()#not a folder produces the exit procedure... 
+                  ...removeFiles();commit_andPush();
+*******************************************************************************************
+submodulizeFolder()
+  eachSubDir()
+     initializeSubmodule()
+      eachSubDir()
+        initializeSubmodule()
+</pre>
 
 ###Map
 <pre>
@@ -60,19 +75,5 @@ credit for design goes to http://mama.indstate.edu/users/ice/tree/
 │   │       │   │   │   │       │   ├── Array.h
 │   │       │   │   │   │       │   ├── ArrayBase.h
 </pre>
-###layout
-<pre>
-          initializeSubmoduleLogic()
-              createRepo()...
-              touchWithReadme()
-                navToSubFolder()
-                  initialize()#not a folder produces the exit procedure... 
-                  ...removeFiles();commit_andPush();
-*******************************************************************************************
-submodulizeFolder()
-  eachSubDir()
-     initializeSubmodule()
-      eachSubDir()
-        initializeSubmodule()
-</pre>
+
 Copyright (c) 2017, Ryan Murphy and Michael Dimmitt
