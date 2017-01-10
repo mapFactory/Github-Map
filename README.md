@@ -76,4 +76,4 @@ credit for design goes to http://mama.indstate.edu/users/ice/tree/
 │   │       │   │   │   │       │   ├── ArrayBase.h
 </pre>
 
-Copyright (c) 2017, Ryan Murphy and Michael Dimmitt
+<b>Copyright (c) 2017, Ryan Murphy and Michael Dimmitt</b>
