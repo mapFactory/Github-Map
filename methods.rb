@@ -68,9 +68,9 @@ def delete_online_repo(folder, account)
 	username = account[:user];password = account[:pass];
 	`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder.split('/')[-1]}}`;#puts folder.split('/')[-1];
 end
-def surface_folder_level(folder, account, del)
+def surface_folder_level(folder, account, exist)
 	Dir.chdir("#{folder}") do |i| #current_directory()
-    	if(del == 1) then delete_online_repo(folder, account);
+    	if(exist == false) then delete_online_repo(folder, account);
 		else
         create_Repo_From_subFolder(folder, account)#still need setup remote repo... check on a json.
         #the above method calls establish_Origin repo.
@@ -78,13 +78,13 @@ def surface_folder_level(folder, account, del)
 		end
     end
 end
-def sub_folder_level(folder, object, del, folder_count)
+def sub_folder_level(folder, object, exist, folder_count)
 	Dir.foreach(folder) do |x|
 		if(File.directory?("#{folder}/#{x}"))
       		if !(x == ".." || x == "." || x == ".git") #sub_directories()
                 folder_count += 1
-                initialize_submodule("#{folder}/#{x}", object, del, 'junk')
-                if(del != 1)
+                initialize_submodule("#{folder}/#{x}", object, exist, 'junk')
+                if(exist != false)
                 	Dir.chdir("#{folder}") do |i|
                     	removeFiles_addSubmodule(x, object[:j])
                     	commit_andPush(x)
@@ -94,11 +94,11 @@ def sub_folder_level(folder, object, del, folder_count)
     	end
 	end
 end
-def initialize_submodule(folder, object, del, type)
+def initialize_submodule(folder, object, exist, type)
     folder_count = 0;
     if (type == "master") then puts "object master used"; account = object[:m];
     else puts "object junk used";account = object[:j]; end
-    surface_folder_level(folder, account, del)
-    folder_count = sub_folder_level(folder, object, del, folder_count)
+    surface_folder_level(folder, account, exist)
+    folder_count = sub_folder_level(folder, object, exist, folder_count)
     if folder_count == 0 then return 1; end 
 end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
