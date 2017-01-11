@@ -27,30 +27,27 @@ end
 
 
 task :submodulize_folder do
-	folder1 = folderName()
 	object = inputsToUser()
-	automate(folder1, object, exist = true, type = 'master')
+	automate(object, exist = true, type = 'master')
 end
 task :delete_submodulize_folder do
-	folder1 = folderName()
 	object = inputsToUser()
-	automate(folder1, object, exist = false, type= 'master')
+	automate(object, exist = false, type= 'master')
 end
 #test Tasks
 task :test_submodulize_folder do
-    folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
+    #folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
     #object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
-    object = inputsToUser(master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    automate(folder1, object, exist = true, type= 'junk')
+    object = inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
+    automate(object, exist = true, type= 'junk')
 end
 task :test_delete_all do
-	folder1	= "1_test_CheckReadmeAndSubdirs";folder2 = "2_test_MasterReponoSub";folder3	= "e_test_NoReadme";	#folder1 = "new_folder"
-	object = inputsToUser(master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    automate(folder1, object, exist = false, type= 'junk')
+	object = inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
+    automate(object, exist = false, type= 'junk')
 end
-def automate(folder1, object, exist, type)
-	if(exist == true) then Backup('Testing', folder1) end
-    folder_count = initialize_submodule("Testing/#{folder1}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
+def automate(object, exist, type)
+	if(exist == true) then Backup('Testing', object[:f]) end
+    folder_count = initialize_submodule("Testing/#{object[:f]}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
     if (folder_count == 1) then puts "No subfolders found in this repository. No actions were taken." end
 end
 
