@@ -1,25 +1,25 @@
 ##How to install.
 install ruby ... #ruby instructions to be added.
-https://github.com/ruby/rake<br>
-bundle install rake<br>
-verify the install <b>command:</b> rake --version; ruby -v;
+<br>https://github.com/ruby/rake<br>
+<br>bundle install rake<br>
+<br>verify the install <b>command:</b> rake --version; ruby -v;
 
 ##How to use.
 (1) clone down the Github-Repo-Submodulizer
 ###To check the functionality of the program without any user actions.
 Navigate to ... www.github.com/miketestgit02
-<b>commands:</b>
-rake test_submodulize_folder  #build
-rake test_delete_all          #revert back
+<br><b>commands:</b>
+<br>rake test_submodulize_folder  #build
+<br>rake test_delete_all          #revert back
 
 ###Influence your own repository... 
 (2) Navigate inside of Github-Repo-Submodulizer to the subfolder named "my_repositories" 
-(2.1) the folders inside "my_repositories" can be input as a folder name. to see how the functionality works.
-(2.2) to operate this program on your repository/project: move that project into "my_repositories" 
-(3) make note of the repository name because you will be prompted for it in the program.
-<b>commands:</b>
-rake submodulize_folder       #build
-rake de_submodulize_folder    #revert back
+<br>(2.1) the folders inside "my_repositories" can be input as a folder name. to see how the functionality works.
+<br>(2.2) to operate this program on your repository/project: move that project into "my_repositories" 
+<br>(3) make note of the repository name because you will be prompted for it in the program.
+<br><b>commands:</b>
+<br>rake submodulize_folder       #build
+<br>rake de_submodulize_folder    #revert back
 
 ###layout
 <pre>
