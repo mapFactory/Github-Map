@@ -18,13 +18,15 @@ def check(credentials, type)
 			return credentials
 		end
 end	#if !credentials.nil?
-def inputsToUser(master = nil, junk = nil)
-	if master.nil? && junk.nil?
+def inputsToUser(folder = nil, master = nil, junk = nil)
+	
+	if folder.nil? && master.nil? && junk.nil?
+		folder = folderName()
 		master = {user: accountName("master"), pass: accountPassword("master")}
 		junk = {user: accountName("junk"), pass: accountPassword("junk")}
 	end
 	master = check(master, 'master'); junk = check(junk, 'junk') #future: 'object ='
-	object = {j: junk, m: master}
+	object = {f: folder, j: junk, m: master}
 end#parameters added would be void... hope is pass by ref.(master, junk)
 def setup_remote_repo(account, name)
 	puts `curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{name}" }'`
