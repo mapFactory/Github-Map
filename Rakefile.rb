@@ -49,7 +49,7 @@ task :test_delete_all do
     automate(folder1, object, exist = false, type= 'junk')
 end
 def automate(folder1, object, exist, type)
-	Backup('Testing', folder1)
+	if(exist == true) then Backup('Testing', folder1) end
     folder_count = initialize_submodule("Testing/#{folder1}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
     if (folder_count == 1) then puts "No subfolders found in this repository. No actions were taken." end
 end
