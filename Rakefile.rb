@@ -25,7 +25,8 @@ end
 task :Test_printInputs do object = inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
 task :test_submodulize_folder do
     folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
-    object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
+    #object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
+    object = inputsToUser({user: "miketestgit02", pass: "qzfreetf59im"}, {user: "miketestgit02", pass: "qzfreetf59im"})
     Backup('Testing', folder1)
     folder_count = initialize_submodule("Testing/#{folder1}", object, 0, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
     if (folder_count == 1) then puts "No subfolders found in this repository. No actions were taken." end

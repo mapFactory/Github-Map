@@ -1,6 +1,6 @@
 def folderName() puts "Please enter folder name: "; folder = STDIN.gets; folder = folder.gsub("\n", ""); end #called specifically in task
-def accountName(str) puts "Please enter #{str}: "; username = STDIN.gets; end #inputsToUser
-def accountPassword(str) puts "Please enter #{str}: "; password = STDIN.noecho(&:gets); end #inputsToUser
+def accountName(str) puts "Please enter Github account name for #{str} repository: "; username = STDIN.gets; username.gsub("\n", ""); end #inputsToUser
+def accountPassword(str) puts "Please enter password for #{str} Github account: "; password = STDIN.noecho(&:gets); password.gsub("\n", ""); end #inputsToUser
 def recollect_github_credentials(account, type)
 	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
 	puts "Username: ";username = STDIN.gets
@@ -18,16 +18,12 @@ def check(credentials, type)
 			return credentials
 		end
 end	#if !credentials.nil?
-def inputsToUser(main_github = nil, secondary_github = nil, main_pass = nil, secondary_pass = nil)
-	if main_github.nil?
-		main_github 		= accountName("Github account name for master repository")
-		secondary_github 	= accountName("Github account name for junk repositories")
-		main_pass 			= accountPassword("password for master GitHub account")
-		secondary_pass 		= accountPassword("password for secondary (junk) GitHub account")
+def inputsToUser(master = nil, junk = nil)
+	if master.nil? && junk.nil?
+		master = {user: accountName("master"), pass: accountPassword("master")}
+		junk = {user: accountName("junk"), pass: accountPassword("junk")}
 	end
-	master = {user: main_github.gsub("\n", ""), pass: main_pass.gsub("\n", "")}
-	junk = {user: secondary_github.gsub("\n", ""), pass: secondary_pass.gsub("\n", "")}
-	master = check(master, 'master');junk = check(junk, 'junk') #future: 'object ='
+	master = check(master, 'master'); junk = check(junk, 'junk') #future: 'object ='
 	object = {j: junk, m: master}
 end#parameters added would be void... hope is pass by ref.(master, junk)
 def setup_remote_repo(account, name)
@@ -83,14 +79,20 @@ def surface_folder_level(folder, account, del)
     end
 end
 def sub_folder_level(folder, object, del, folder_count)
-    Dir.foreach(folder) do |x| if(File.directory?("#{folder}/#{x}")) then if !(x == ".." || x == "." || x == ".git") #sub_directories()
+	Dir.foreach(folder) do |x|
+		if(File.directory?("#{folder}/#{x}"))
+      		if !(x == ".." || x == "." || x == ".git") #sub_directories()
                 folder_count += 1
                 initialize_submodule("#{folder}/#{x}", object, del, 'junk')
-                if(del == 1) then else
+                if(del != 1)
                 	Dir.chdir("#{folder}") do |i|
                     	removeFiles_addSubmodule(x, object[:j])
                     	commit_andPush(x)
-    end end end end end
+    				end
+     			end
+      		end
+    	end
+	end
 end
 def initialize_submodule(folder, object, del, type)
     folder_count = 0;
