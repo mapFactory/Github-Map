@@ -3,7 +3,6 @@ require 'json'
 require_relative 'methods.rb'
 #Live tasks
 task :Test_printInputs do object = inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
-
 task :check_delete_repo do #task created for testing purposes to show deleting of repo.
 	folder = folderName()
 	object = inputsToUser()#check is inside inputs()
@@ -24,8 +23,6 @@ task :test_check_delete_repo do
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
 	end
 end
-
-
 task :submodulize_folder do
 	object = inputsToUser()
 	automate(object, exist = true, type = 'master')
@@ -44,19 +41,4 @@ end
 task :test_delete_all do
 	object = inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
     automate(object, exist = false, type= 'junk')
-end
-def automate(object, exist, type)
-	if(exist == true) then Backup('Testing', object[:f]) end
-    folder_count = initialize_submodule("Testing/#{object[:f]}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
-    if (folder_count == 1) then puts "No subfolders found in this repository. No actions were taken." end
-end
-
-def determine_if_subfolders(folder_count, exist)
-	if (folder_count == 1)
-            puts "No subfolders found in this repository. No actions were taken."
-	else
-                if (exist == false)
-                	Delete_Backup('Testing', folder1)#object[:folder1]
-                end
-	end
 end
