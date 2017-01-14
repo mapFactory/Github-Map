@@ -5,34 +5,21 @@ def recollect_github_credentials(account, type)
 	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
 	puts "Username: ";username = STDIN.gets
 	puts "Password: ";password = STDIN.noecho(&:gets)
-	new_account = {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
-	return new_account
+	{user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
 end
 def check(credentials, type)
-		response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
-		response = JSON.parse(response[response.index('{')..-1])
-		if response["message"]
-			puts "Incorrect #{type} account or credentials"
-			check(recollect_github_credentials(credentials, type), type)
-		else
-			return credentials
-		end
-end	#if !credentials.nil?
+	response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
+	response = JSON.parse(response[response.index('{')..-1])
+	response["message"] ? check(recollect_github_credentials(credentials, type), type) : credentials
+end
 def inputsToUser(folder = nil, master = nil, junk = nil)
-	
 	if folder.nil? && master.nil? && junk.nil?
 		folder = folderName()
 		master = {user: accountName("master"), pass: accountPassword("master")}
 		junk = {user: accountName("junk"), pass: accountPassword("junk")}
 	end
-	master = check(master, 'master'); junk = check(junk, 'junk') #future: 'object ='
-	object = {f: folder, j: junk, m: master}
+	{f: folder, j: check(junk, 'junk'), m: check(master, 'master')}
 end#parameters added would be void... hope is pass by ref.(master, junk)
-def setup_remote_repo(account, name)
-	puts `curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{name}" }'`
-	repo_check = JSON.parse(`curl https://api.github.com/repos/#{account[:user]}/#{name}`)
-	return repo_check["message"].nil?
-end# posts an empty repo to github. #should we delete?
 def establish_Origin_repo(folder, account)
 		puts `git remote rm origin`
  		`git remote add origin https://#{account[:user]}:#{account[:pass]}@github.com/#{account[:user]}/#{folder.split('/')[-1]}.git`
@@ -72,21 +59,20 @@ def delete_online_repo(folder, account)
 end
 def surface_folder_level(folder, account, exist)
 	Dir.chdir("#{folder}") do |i| #current_directory()
-    	if(exist == false) then delete_online_repo(folder, account);
+		if !exist
+			delete_online_repo(folder, account)
 		else
-        create_Repo_From_subFolder(folder, account)#still need setup remote repo... check on a json.
-        #the above method calls establish_Origin repo.
-		touchwithReadme(folder)
+			create_Repo_From_subFolder(folder, account)
+			touchwithReadme(folder)
 		end
     end
 end
-def sub_folder_level(folder, object, exist, folder_count)
+def sub_folder_level(folder, object, exist)
 	Dir.foreach(folder) do |x|
 		if(File.directory?("#{folder}/#{x}"))
       		if !(x == ".." || x == "." || x == ".git") #sub_directories()
-                folder_count += 1
                 initialize_submodule("#{folder}/#{x}", object, exist, 'junk')
-                if(exist != false)
+                if exist
                 	Dir.chdir("#{folder}") do |i|
                     	removeFiles_addSubmodule(x, object[:j])
                     	commit_andPush(x)
@@ -97,10 +83,48 @@ def sub_folder_level(folder, object, exist, folder_count)
 	end
 end
 def initialize_submodule(folder, object, exist, type)
-    folder_count = 0;
-    if (type == "master") then puts "object master used"; account = object[:m];
-    else puts "object junk used";account = object[:j]; end
-    surface_folder_level(folder, account, exist)
-    folder_count = sub_folder_level(folder, object, exist, folder_count)
-    if folder_count == 0 then return 1; end 
+	if master_has_subfolders(folder, type)
+		account = (type == "master" ? object[:m] : object[:j])
+		surface_folder_level(folder, account, exist)
+		sub_folder_level(folder, object, exist)
+	else
+		puts "No subfolders found in this repository. No actions were taken."
+	end
 end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+# def initialize_submodule(folder, object, exist, type)
+#     folder_count = 0;
+#     if (type == "master") then puts "object master used"; account = object[:m];
+#     else puts "object junk used";account = object[:j]; end
+#     surface_folder_level(folder, account, exist)
+#     folder_count = sub_folder_level(folder, object, exist, folder_count)
+#     if folder_count == 0 then return 1; end 
+# end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+def master_has_subfolders(folder, type)
+	if type == "master"
+		Dir.foreach(folder) do |x|
+			if(File.directory?("#{folder}/#{x}"))
+	      		if !(x == ".." || x == "." || x == ".git") #sub_directories()
+	                folder_count += 1
+	      		end
+	    	end
+		end
+		folder_count
+	else
+		true
+	end
+end
+def automate(object, exist, type)
+	if exist
+		Backup('Testing', object[:f])
+	end
+    initialize_submodule("Testing/#{object[:f]}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
+end
+# def determine_if_subfolders(folder_count, exist)
+# 	if (folder_count == 1)
+#             puts "No subfolders found in this repository. No actions were taken."
+# 	else
+#                 if (exist == false)
+#                 	Delete_Backup('Testing', folder1)#object[:folder1]
+#                 end
+# 	end
+# end #Not used, replacement method is master_has_subfolders
