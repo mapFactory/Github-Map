@@ -191,7 +191,7 @@ task :submodulize_folder do
 =======
 >>>>>>> 168b92f... simplified tasks; folder logic added to overall object
 	object = inputsToUser()
-	automate(object, exist = true, type = 'master')
+	automate("my_repositories", object, exist = true, type = 'master')
 end
 <<<<<<< HEAD
 >>>>>>> b41290b... both working; added methods submodulize_folder() and delete_submodulize_folder()
@@ -204,16 +204,16 @@ task :delete_submodulize_folder do
 =======
 >>>>>>> 168b92f... simplified tasks; folder logic added to overall object
 	object = inputsToUser()
-	automate(object, exist = false, type= 'master')
+	automate("my_repositories", object, exist = false, type= 'master')
 end
 #test Tasks
 task :test_submodulize_folder do
     #folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
     #object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
     object = inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    automate(object, exist = true, type= 'junk')
+    automate("Testing",object, exist = true, type= 'junk')
 end
 task :test_delete_all do
 	object = inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    automate(object, exist = false, type= 'junk')
+    automate("Testing",object, exist = false, type= 'junk')
 end
