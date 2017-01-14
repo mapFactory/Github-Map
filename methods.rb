@@ -5,14 +5,14 @@ def recollect_github_credentials(account, type)
 	puts "Account credentials for #{account[:user]} (#{type} account) invalid."
 	puts "Username: ";username = STDIN.gets
 	puts "Password: ";password = STDIN.noecho(&:gets)
-	{user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
+	return {user: username.gsub("\n", ""), pass: password.gsub("\n", "")}
 end
 def check(credentials, type)
 	response = `curl -i https://api.github.com -u #{credentials[:user]}:#{credentials[:pass]}`
 	response = JSON.parse(response[response.index('{')..-1])
 	response["message"] ? check(recollect_github_credentials(credentials, type), type) : credentials
 end
-def master_remote_exists(object)
+def check_master_remote_exists(object)
 	response = `curl -i https://api.github.com/repos/#{object[:m][:user]}/#{object[:f]}`
 	response = JSON.parse(response[response.index('{')..-1])
 	response["message"].nil?
@@ -23,7 +23,7 @@ def inputsToUser(folder = nil, master = nil, junk = nil)
 		master = {user: accountName("master"), pass: accountPassword("master")}
 		junk = {user: accountName("junk"), pass: accountPassword("junk")}
 	end
-	{f: folder, j: check(junk, 'junk'), m: check(master, 'master')}
+	return {f: folder, j: check(junk, 'junk'), m: check(master, 'master')}
 end#parameters added would be void... hope is pass by ref.(master, junk)
 def establish_Origin_repo(folder, account)
 		puts `git remote rm origin`
@@ -58,20 +58,19 @@ def Delete_Backup(environmentFolder, folder)
         puts `rm -rf backup_#{folder}` 
     end
 end
-
 def delete_online_repo(folder, account)
 	username = account[:user];password = account[:pass];
 	`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder.split('/')[-1]}}`;#puts folder.split('/')[-1];
 end
 def surface_folder_level(folder, account, exist)
 	Dir.chdir("#{folder}") do |i| #current_directory()
-		if !exist
+		if exist
 			create_Repo_From_subFolder(folder, account)
 			touchwithReadme(folder)
 		else
 			delete_online_repo(folder, account)
 		end
-    end
+	end
 end
 def sub_folder_level(folder, object, exist)
 	Dir.foreach(folder) do |x|
@@ -82,47 +81,34 @@ def sub_folder_level(folder, object, exist)
                 			Dir.chdir("#{folder}") do |i|
                     				removeFiles_addSubmodule(x, object[:j])
                     				commit_andPush(x)
-    					end
-     				end
-      			end
-    		end
-	end
-end
-def master_has_subfolders(folder, type)
+end	end	end 	end 	end	end
+def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would mean that type is "junk"
 	if type == "master"
 		Dir.foreach(folder) do |x|
 			if(File.directory?("#{folder}/#{x}"))
 	      			if !(x == ".." || x == "." || x == ".git") #sub_directories()
-	                		folder_count += 1
-	      			end
-	    		end
-		end
-		folder_count
+	                		return 2
+		end	end	end
 	else
-		true
+		return true
 	end
+	#if the return has not happened by now it is presumably false.
 end
 def initialize_submodule(folder, object, exist, type)
-	if master_has_subfolders(folder, type)
+	if master_has_subfolders_or_is_secondary_already(folder, type)
 		account = (type == "master" ? object[:m] : object[:j])
 		surface_folder_level(folder, account, exist)
 		sub_folder_level(folder, object, exist)
-	else
-		puts "No subfolders found in this repository. No actions were taken."
-	end
-end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+	else puts "No subfolders found in this repository. No actions were taken."
+end	end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
 def clone_master(object)
-	if master_remote_exists(object)
+	if check_master_remote_exists(object)
 		Dir.chdir("Testing") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
-		end
-	end
-end
-def automate(object, exist, type)
+end 	end	end
+def automate(environmentFolder, object, exist, type)
 	clone_master(object)
-	if exist
-		Backup('Testing', object[:f])
-	end
-    initialize_submodule("Testing/#{object[:f]}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
+	if exist then Backup(environmentFolder, object[:f]) end
+	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, 'junk')
 end
