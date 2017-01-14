@@ -113,7 +113,21 @@ def master_has_subfolders(folder, type)
 		true
 	end
 end
+def master_remote_exists(object)
+	response = `curl -i https://api.github.com/repos/#{object[:m][:user]}/#{object[:f]}`
+	response = JSON.parse(response[response.index('{')..-1])
+	response["message"].nil?
+end
+def clone_master(object)
+	if master_remote_exists(object)
+		Dir.chdir("Testing") do
+			puts `rm -rf #{object[:f]}`
+			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
+		end
+	end
+end
 def automate(object, exist, type)
+	clone_master(object)
 	if exist
 		Backup('Testing', object[:f])
 	end
