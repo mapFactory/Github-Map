@@ -95,20 +95,22 @@ def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would 
 	#if the return has not happened by now it is presumably false.
 end
 def initialize_submodule(folder, object, exist, type)
-	if master_has_subfolders_or_is_secondary_already(folder, type)
+	if master_has_subfolders_or_is_subfolder_already(folder, type)
 		account = (type == "master" ? object[:m] : object[:j])
 		surface_folder_level(folder, account, exist)
 		sub_folder_level(folder, object, exist)
 	else puts "No subfolders found in this repository. No actions were taken."
 end	end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-def clone_master(object)
+def clone_master(environmentFolder, object)
 	if check_master_remote_exists(object)
-		Dir.chdir("Testing") do
+		Dir.chdir("#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
 end 	end	end
 def automate(environmentFolder, object, exist, type)
-	clone_master(object)
-	if exist then Backup(environmentFolder, object[:f]) end
+	if exist 
+		clone_master(environmentFolder, object)
+		Backup(environmentFolder, object[:f]) 
+	end	
 	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, 'junk')
 end
