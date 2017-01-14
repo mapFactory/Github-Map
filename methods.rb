@@ -12,6 +12,11 @@ def check(credentials, type)
 	response = JSON.parse(response[response.index('{')..-1])
 	response["message"] ? check(recollect_github_credentials(credentials, type), type) : credentials
 end
+def master_remote_exists(object)
+	response = `curl -i https://api.github.com/repos/#{object[:m][:user]}/#{object[:f]}`
+	response = JSON.parse(response[response.index('{')..-1])
+	response["message"].nil?
+end
 def inputsToUser(folder = nil, master = nil, junk = nil)
 	if folder.nil? && master.nil? && junk.nil?
 		folder = folderName()
@@ -53,6 +58,7 @@ def Delete_Backup(environmentFolder, folder)
         puts `rm -rf backup_#{folder}` 
     end
 end
+
 def delete_online_repo(folder, account)
 	username = account[:user];password = account[:pass];
 	`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder.split('/')[-1]}}`;#puts folder.split('/')[-1];
@@ -60,26 +66,40 @@ end
 def surface_folder_level(folder, account, exist)
 	Dir.chdir("#{folder}") do |i| #current_directory()
 		if !exist
-			delete_online_repo(folder, account)
-		else
 			create_Repo_From_subFolder(folder, account)
 			touchwithReadme(folder)
+		else
+			delete_online_repo(folder, account)
 		end
     end
 end
 def sub_folder_level(folder, object, exist)
 	Dir.foreach(folder) do |x|
 		if(File.directory?("#{folder}/#{x}"))
-      		if !(x == ".." || x == "." || x == ".git") #sub_directories()
-                initialize_submodule("#{folder}/#{x}", object, exist, 'junk')
-                if exist
-                	Dir.chdir("#{folder}") do |i|
-                    	removeFiles_addSubmodule(x, object[:j])
-                    	commit_andPush(x)
-    				end
-     			end
-      		end
-    	end
+      			if !(x == ".." || x == "." || x == ".git") #sub_directories()
+                		initialize_submodule("#{folder}/#{x}", object, exist, 'junk')
+                		if exist
+                			Dir.chdir("#{folder}") do |i|
+                    				removeFiles_addSubmodule(x, object[:j])
+                    				commit_andPush(x)
+    					end
+     				end
+      			end
+    		end
+	end
+end
+def master_has_subfolders(folder, type)
+	if type == "master"
+		Dir.foreach(folder) do |x|
+			if(File.directory?("#{folder}/#{x}"))
+	      			if !(x == ".." || x == "." || x == ".git") #sub_directories()
+	                		folder_count += 1
+	      			end
+	    		end
+		end
+		folder_count
+	else
+		true
 	end
 end
 def initialize_submodule(folder, object, exist, type)
@@ -91,33 +111,6 @@ def initialize_submodule(folder, object, exist, type)
 		puts "No subfolders found in this repository. No actions were taken."
 	end
 end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-# def initialize_submodule(folder, object, exist, type)
-#     folder_count = 0;
-#     if (type == "master") then puts "object master used"; account = object[:m];
-#     else puts "object junk used";account = object[:j]; end
-#     surface_folder_level(folder, account, exist)
-#     folder_count = sub_folder_level(folder, object, exist, folder_count)
-#     if folder_count == 0 then return 1; end 
-# end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-def master_has_subfolders(folder, type)
-	if type == "master"
-		Dir.foreach(folder) do |x|
-			if(File.directory?("#{folder}/#{x}"))
-	      		if !(x == ".." || x == "." || x == ".git") #sub_directories()
-	                folder_count += 1
-	      		end
-	    	end
-		end
-		folder_count
-	else
-		true
-	end
-end
-def master_remote_exists(object)
-	response = `curl -i https://api.github.com/repos/#{object[:m][:user]}/#{object[:f]}`
-	response = JSON.parse(response[response.index('{')..-1])
-	response["message"].nil?
-end
 def clone_master(object)
 	if master_remote_exists(object)
 		Dir.chdir("Testing") do
@@ -133,12 +126,3 @@ def automate(object, exist, type)
 	end
     initialize_submodule("Testing/#{object[:f]}", object, exist, 'junk')#doStuff('Testing', folder1, object[:m], object[:j])
 end
-# def determine_if_subfolders(folder_count, exist)
-# 	if (folder_count == 1)
-#             puts "No subfolders found in this repository. No actions were taken."
-# 	else
-#                 if (exist == false)
-#                 	Delete_Backup('Testing', folder1)#object[:folder1]
-#                 end
-# 	end
-# end #Not used, replacement method is master_has_subfolders
