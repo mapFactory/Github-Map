@@ -102,7 +102,7 @@ def initialize_submodule(folder, object, exist, type)
 	else puts "No subfolders found in this repository. No actions were taken."
 end	end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
 def clone_master(environmentFolder, object)
-	if check_master_remote_exists(object)
+	if check_master_remote_exists(object)#if it was online... rm folder if exists and clone it down.
 		Dir.chdir("#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
