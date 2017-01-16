@@ -97,6 +97,7 @@ end
 def initialize_submodule(folder, object, exist, type)
 	if master_has_subfolders_or_is_subfolder_already(folder, type)
 		account = (type == "master" ? object[:m] : object[:j])
+		# check_repo_exist(account)if_object[j]
 		surface_folder_level(folder, account, exist)
 		sub_folder_level(folder, object, exist)
 	else puts "No subfolders found in this repository. No actions were taken."
