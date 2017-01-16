@@ -1,4 +1,4 @@
-def folderName() puts "Please enter folder name: "; folder = STDIN.gets; folder = folder.gsub("\n", ""); end #called specifically in task
+def folderName(folder = nil) puts "Please enter folder name: "; folder = STDIN.gets; folder = folder.gsub("\n", ""); end #called specifically in task
 def accountName(str) puts "Please enter Github account name for #{str} repository: "; username = STDIN.gets; username.gsub("\n", ""); end #inputsToUser
 def accountPassword(str) puts "Please enter password for #{str} Github account: "; password = STDIN.noecho(&:gets); password.gsub("\n", ""); end #inputsToUser
 def recollect_github_credentials(account, type)
@@ -102,12 +102,23 @@ def initialize_submodule(folder, object, exist, type)
 		sub_folder_level(folder, object, exist)
 	else puts "No subfolders found in this repository. No actions were taken."
 end	end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
+def check_local_directory_exists(environmentFolder, object)
+		if(!File.directory?("#{environmentFolder}/#{object[:f]}"))
+        	puts "did not find file #{object[:f]}"
+        	object[:f] = folderName(object[:f])
+        	clone_master(environmentFolder, object)
+    	end
+end
 def clone_master(environmentFolder, object)
 	if check_master_remote_exists(object)#if it was online... rm folder if exists and clone it down.
 		Dir.chdir("#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone --recursive https://github.com/#{object[:m][:user]}/#{object[:f]}`
-end 	end	end
+		end 
+	else 
+		check_local_directory_exists("#{environmentFolder}", object)
+	end
+end
 def automate(environmentFolder, object, exist, type)
 	if exist 
 		clone_master("#{environmentFolder}", object)
