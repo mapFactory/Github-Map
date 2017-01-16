@@ -106,11 +106,11 @@ def clone_master(environmentFolder, object)
 	if check_master_remote_exists(object)#if it was online... rm folder if exists and clone it down.
 		Dir.chdir("#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
-			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
+			puts `git clone --recursive https://github.com/#{object[:m][:user]}/#{object[:f]}`
 end 	end	end
 def automate(environmentFolder, object, exist, type)
 	if exist 
-		clone_master(environmentFolder, object)
+		clone_master("#{environmentFolder}", object)
 		Backup(environmentFolder, object[:f]) 
 	end	
 	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, 'junk')
