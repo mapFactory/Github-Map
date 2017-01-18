@@ -31,7 +31,8 @@ def establish_Origin_repo(folder, account)
 end #do not puts anything that shows credentials		
 def create_Repo_From_subFolder(folder, account)
 		puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
- 		`curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }'`
+ 		`curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }' --quiet`
+		# *check remote exists here* warning: adds additional ping
 		establish_Origin_repo(folder, account)
 		`git push origin master --quiet`
 end# creates empty repo using name of given folder as repo name.# folder name is collected by spliting "folder" and string after last "/"
