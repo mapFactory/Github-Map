@@ -12,8 +12,9 @@ def check(credentials, type)
 	response = JSON.parse(response[response.index('{')..-1])
 	response["message"] ? check(recollect_github_credentials(credentials, type), type) : credentials
 end
-def check_master_remote_exists(object)
-	response = `curl -i https://api.github.com/repos/#{object[:m][:user]}/#{object[:f]}`
+def check_remote_exists(account, folder)
+	#account = (type == "master" ? object[:m] : object[:j])
+	response = `curl -i https://api.github.com/repos/#{account[:user]}/#{folder}`
 	response = JSON.parse(response[response.index('{')..-1])
 	response["message"].nil?
 end
@@ -32,9 +33,15 @@ end #do not puts anything that shows credentials
 def create_Repo_From_subFolder(folder, account)
 		puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
  		`curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }' /dev/null`
-		# *check remote exists here* warning: adds additional ping
-		establish_Origin_repo(folder, account)
-		`git push origin master --quiet`
+		if check_remote_exists(account, folder.split('/')[-1])
+			establish_Origin_repo(folder, account)
+			`git push origin master --quiet`
+		else
+			puts "Failed to create remote repo for #{folder}."
+		end
+		#check_remote_exist() *check remote exists here* warning: adds additional ping
+		#puts folder
+		
 end# creates empty repo using name of given folder as repo name.# folder name is collected by spliting "folder" and string after last "/"
 def commit_andPush(x)
 	puts `git rm --cached -rf #{x}`
@@ -111,7 +118,7 @@ def check_local_directory_exists(environmentFolder, object)
     	end
 end
 def clone_master(environmentFolder, object)
-	if check_master_remote_exists(object)#if it was online... rm folder if exists and clone it down.
+	if check_remote_exists(object[:m], object[:f])#if it was online... rm folder if exists and clone it down.
 		Dir.chdir("#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone --recursive https://github.com/#{object[:m][:user]}/#{object[:f]}`
