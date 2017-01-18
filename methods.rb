@@ -56,6 +56,14 @@ def touchwithReadme(folder)
 		puts `touch README.md`
 	end
 end
+def submodule_backup(environmentFolder, folder)
+	Dir.chdir("#{environmentFolder}/") do |x|
+    	if File.directory?("submodulebackup_#{folder}")
+    		puts `rm -rf submodulebackup_#{folder}`
+    	end
+    	puts `cp -r #{folder} submodulebackup_#{folder}` 
+    end
+end
 def Backup(environmentFolder, folder)
     Dir.chdir("#{environmentFolder}/") do |x|
     	if !File.directory?("backup_#{folder}")
@@ -135,4 +143,5 @@ def automate(environmentFolder, object, exist, type)
 		Backup(environmentFolder, object[:f]) 
 	end	
 	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, type)
+	submodule_backup(environmentFolder, object[:f])
 end

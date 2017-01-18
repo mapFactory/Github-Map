@@ -184,6 +184,10 @@ task :test_check_delete_repo do
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
 	end
 end
+task :update_submodule_backup do
+	folder = folderName
+	submodule_backup("my_repositories", folder)
+end
 task :submodulize_folder do
 <<<<<<< HEAD
 >>>>>>> 0f9a3b3... refactored task; more readable parameters; seperate concern, automate method.
