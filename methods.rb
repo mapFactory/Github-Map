@@ -31,7 +31,7 @@ def establish_Origin_repo(folder, account)
 end #do not puts anything that shows credentials		
 def create_Repo_From_subFolder(folder, account)
 		puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
- 		`curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }' --quiet`
+ 		`curl -u "#{account[:user]}:#{account[:pass]}" https://api.github.com/user/repos -d '{ "name": "#{folder.split('/')[-1]}" }' /dev/null`
 		# *check remote exists here* warning: adds additional ping
 		establish_Origin_repo(folder, account)
 		`git push origin master --quiet`
@@ -66,8 +66,8 @@ end
 def surface_folder_level(folder, account, exist)
 	Dir.chdir("#{folder}") do |i| #current_directory()
 		if exist
-			create_Repo_From_subFolder(folder, account)
 			touchwithReadme(folder)
+			create_Repo_From_subFolder(folder, account)
 		else
 			delete_online_repo(folder, account)
 		end
