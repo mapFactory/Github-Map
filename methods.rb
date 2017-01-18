@@ -124,5 +124,5 @@ def automate(environmentFolder, object, exist, type)
 		clone_master("#{environmentFolder}", object)
 		Backup(environmentFolder, object[:f]) 
 	end	
-	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, 'junk')
+	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, type)
 end
