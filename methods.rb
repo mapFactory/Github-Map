@@ -58,6 +58,9 @@ def touchwithReadme(folder)
 end
 def Backup(environmentFolder, folder)
     Dir.chdir("#{environmentFolder}/") do |x|
+    	if File.directory?("backup_#{folder}")
+    		puts `rm -rf backup_#{folder}`
+    	end
         puts `cp -r #{folder} backup_#{folder}` 
     end
 end# Copy never to be touched till end... if copy already exists it should be ignored or copy itself not be overridden
