@@ -125,7 +125,7 @@ def initialize_submodule(folder, object, exist, type)
 			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
 		end
 	else 
-		check_local_directory_exists("#{folder}", object)
+		check_local_directory_exists("#{folder}", object, exist, type)
 	end
 	Backup(environmentFolder, object[:f])  
 	if master_has_subfolders_or_is_subfolder_already(folder, type)
@@ -135,11 +135,12 @@ def initialize_submodule(folder, object, exist, type)
 		sub_folder_level(folder, object, exist)
 	else puts "No subfolders found in this repository. No actions were taken."
 end	end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-def check_local_directory_exists(environmentFolder, object)
-		if(!File.directory?("#{environmentFolder}/#{object[:f]}"))
+def check_local_directory_exists(folder, object, exist, type)
+	if(!File.directory?("#{folder}/#{object[:f]}"))
         	puts "did not find file #{object[:f]}"
         	object[:f] = folderName(object[:f])
-        	clone_master(environmentFolder, object)
+        	initialize_submodule(folder, object, exist, type)
+		#clone_master(environmentFolder, object)
     	end
 end
 # def clone_master(environmentFolder, object)
