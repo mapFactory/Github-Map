@@ -118,16 +118,10 @@ def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would 
 	#if the return has not happened by now it is presumably false.
 end
 def initialize_submodule(folder, object, exist, type)
-	#possibly move this... here... account = (type == "master" ? object[:m] : object[:j])
-	if check_remote_exists(object[:m], object[:f])#if it was online... rm folder if exists and clone it down.
-		Dir.chdir("#{folder}") do
-			puts `rm -rf #{object[:f]}`
-			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
-		end
-	else 
-		check_local_directory_exists("#{folder}", object, exist, type)
+	if exist && type == "master"
+		clone_master(folder.split('/').first, object)
+		Backup(folder.split('/').first, object[:f])  
 	end
-	Backup(environmentFolder, object[:f])  
 	if master_has_subfolders_or_is_subfolder_already(folder, type)
 		account = (type == "master" ? object[:m] : object[:j])
 		# check_repo_exist(account)if_object[j]
@@ -139,25 +133,20 @@ def check_local_directory_exists(folder, object, exist, type)
 	if(!File.directory?("#{folder}/#{object[:f]}"))
         	puts "did not find file #{object[:f]}"
         	object[:f] = folderName(object[:f])
-        	initialize_submodule(folder, object, exist, type)
-		#clone_master(environmentFolder, object)
+			clone_master(folder, object)
     	end
 end
-# def clone_master(environmentFolder, object)
-# 	#if check_remote_exists(object[:m], object[:f])#if it was online... rm folder if exists and clone it down.
-# 		#Dir.chdir("#{environmentFolder}") do
-# 			#puts `rm -rf #{object[:f]}`
-# 			#puts `git clone --recursive https://github.com/#{object[:m][:user]}/#{object[:f]}`
-# 		end 
-# 	else 
-# 		check_local_directory_exists("#{environmentFolder}", object)
-# 	end
-# end
+def clone_master(environmentFolder, object)
+	if check_remote_exists(object[:m], object[:f])#if it was online... rm folder if exists and clone it down.
+		Dir.chdir("#{environmentFolder}") do
+			puts `rm -rf #{object[:f]}`
+			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
+		end 
+	else 
+		check_local_directory_exists("#{environmentFolder}", object)
+	end
+end
 def automate(environmentFolder, object, exist, type)
-	if exist 
-		#clone_master("#{environmentFolder}", object)
-		# Backup(environmentFolder, object[:f]) 
-	end	
 	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, type)
 	submodule_backup(environmentFolder, object[:f])
 end
