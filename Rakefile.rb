@@ -198,6 +198,7 @@ task :submodulize_folder do
 	automate("my_repositories", object, exist = true, type = 'master')
 end
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b41290b... both working; added methods submodulize_folder() and delete_submodulize_folder()
 task :submodulize_folder do
 =======
@@ -207,6 +208,9 @@ task :delete_submodulize_folder do
 	folder1 = folderName()
 =======
 >>>>>>> 168b92f... simplified tasks; folder logic added to overall object
+=======
+task :desubmodulize_folder do
+>>>>>>> ff005cc... renamed rake tasks
 	object = inputsToUser()
 	automate("my_repositories", object, exist = false, type= 'master')
 end
@@ -217,7 +221,7 @@ task :test_submodulize_folder do
     object = inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
     automate("Testing",object, exist = true, type= 'junk')
 end
-task :test_delete_all do
+task :test_desubmodulize_folder do
 	object = inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
     automate("Testing",object, exist = false, type= 'junk')
 end
