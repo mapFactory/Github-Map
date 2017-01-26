@@ -118,10 +118,14 @@ def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would 
 	#if the return has not happened by now it is presumably false.
 end
 def initialize_submodule(folder, object, exist, type)
-	if exist && type == "master"
-		clone_master(folder.split('/').first, object)
-		Backup(folder.split('/').first, object[:f])  
-	end
+	# if exist && type == "master"
+	# 	clone_master(folder.split('/').first, object)
+	# 	Backup(folder.split('/').first, object[:f])
+	# 	set_submodulized(folder.split('/').first, folder.split('/')[-1]) 
+	# end
+	# if !exist && type == "master"
+	# 	unset_submodulized(folder.split('/').first, folder.split('/')[-1]) 
+	# end
 	if master_has_subfolders_or_is_subfolder_already(folder, type)
 		account = (type == "master" ? object[:m] : object[:j])
 		# check_repo_exist(account)if_object[j]
@@ -129,7 +133,7 @@ def initialize_submodule(folder, object, exist, type)
 		sub_folder_level(folder, object, exist)
 	else puts "No subfolders found in this repository. No actions were taken."
 end	end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
-def check_local_directory_exists(folder, object, exist, type)
+def check_local_directory_exists(folder, object)
 	if(!File.directory?("#{folder}/#{object[:f]}"))
         	puts "did not find file #{object[:f]}"
         	object[:f] = folderName(object[:f])
@@ -146,7 +150,37 @@ def clone_master(environmentFolder, object)
 		check_local_directory_exists("#{environmentFolder}", object)
 	end
 end
+def set_submodulized(environmentFolder, folder)
+	Dir.chdir("#{environmentFolder}/#{folder}") do |x|
+		puts "file touched"
+		`touch .submodulized`
+	end
+end
+def unset_submodulized(environmentFolder, folder)
+	Dir.chdir("#{environmentFolder}/#{folder}") do |x|
+		`rm .submodulized`
+	end
+end
+def check_submodulized(environmentFolder, folder)
+	Dir.chdir("#{environmentFolder}/#{folder}") do |x|
+		return File.exist?('.submodulized')
+	end
+end
 def automate(environmentFolder, object, exist, type)
-	initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, type)
-	submodule_backup(environmentFolder, object[:f])
+	#Below logic needs to be refactored
+	if (exist && !check_submodulized(environmentFolder, object[:f])) || (!exist && check_submodulized(environmentFolder, object[:f]))
+		if exist
+			clone_master(environmentFolder, object)
+			Backup(environmentFolder, object[:f])
+			set_submodulized(environmentFolder, object[:f]) 
+		else
+			unset_submodulized(environmentFolder, object[:f]) 
+		end
+
+		initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, type)
+		submodule_backup(environmentFolder, object[:f])
+	else
+		puts "Folder is already submodulized. No actions taken."
+	end
+	
 end
