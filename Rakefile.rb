@@ -31,7 +31,7 @@ task :submodulize_folder do
 	object = inputsToUser()
 	automate("my_repositories", object, exist = true, type = 'master')
 end
-task :delete_submodulize_folder do
+task :desubmodulize_folder do
 	object = inputsToUser()
 	automate("my_repositories", object, exist = false, type= 'master')
 end
@@ -42,7 +42,7 @@ task :test_submodulize_folder do
     object = inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
     automate("Testing",object, exist = true, type= 'junk')
 end
-task :test_delete_all do
+task :test_desubmodulize_folder do
 	object = inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
     automate("Testing",object, exist = false, type= 'junk')
 end
