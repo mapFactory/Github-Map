@@ -1,6 +1,10 @@
 require 'io/console'
 require 'json'
-require_relative 'methods.rb'
+#require_relative 'methods.rb'
+require_relative 'inputs.rb'
+require_relative 'repo_finder.rb'
+require_relative 'backup.rb'
+require_relative 'environment.rb'
 #Live tasks
 task :Test_printInputs do object = inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
 task :check_delete_repo do #task created for testing purposes to show deleting of repo.
@@ -39,10 +43,10 @@ end
 task :test_submodulize_folder do
     #folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
     #object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
-    object = inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    automate("Testing",object, exist = true, type= 'junk')
+    object = Inputs.inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
+    Environment.automate("Testing",object, exist = true, type= 'junk')
 end
 task :test_desubmodulize_folder do
-	object = inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    automate("Testing",object, exist = false, type= 'junk')
+	object = Inputs.inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
+    Environment.automate("Testing",object, exist = false, type= 'junk')
 end
