@@ -53,6 +53,7 @@ require_relative 'inputs.rb'
 require_relative 'repo_finder.rb'
 require_relative 'backup.rb'
 require_relative 'environment.rb'
+require_relative 'navigation.rb'
 #Live tasks
 task :Test_printInputs do object = inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
 task :check_delete_repo do #task created for testing purposes to show deleting of repo.
@@ -194,12 +195,17 @@ task :update_submodule_backup do
 end
 task :submodulize_folder do
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 0f9a3b3... refactored task; more readable parameters; seperate concern, automate method.
 	folder1 = folderName()
 =======
 >>>>>>> 168b92f... simplified tasks; folder logic added to overall object
 	object = inputsToUser()
 	automate("my_repositories", object, exist = true, type = 'master')
+=======
+	object = Inputs.inputsToUser()
+	Navigator.automate("my_repositories", object, exist = true, type = 'master')
+>>>>>>> d42db65... Program runs but still needs improvement
 end
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -216,16 +222,16 @@ task :delete_submodulize_folder do
 task :desubmodulize_folder do
 >>>>>>> ff005cc... renamed rake tasks
 	object = inputsToUser()
-	automate("my_repositories", object, exist = false, type= 'master')
+	Navigator.automate("my_repositories", object, exist = false, type= 'master')
 end
 #test Tasks
 task :test_submodulize_folder do
     #folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
     #object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")
     object = Inputs.inputsToUser("1_test_CheckReadmeAndSubdirs" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    Environment.automate("Testing",object, exist = true, type= 'junk')
+    Navigator.automate("Testing",object, exist = true, type= 'junk')
 end
 task :test_desubmodulize_folder do
 	object = Inputs.inputsToUser("1_test_CheckReadmeAndSubdirs", master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
-    Environment.automate("Testing",object, exist = false, type= 'junk')
+    Navigator.automate("Testing",object, exist = false, type= 'junk')
 end
