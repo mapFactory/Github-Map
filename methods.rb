@@ -94,16 +94,18 @@ def surface_folder_level(folder, account, exist)
     end
   end
 end
-def sub_folder_level(folder, object, exist)
-  Dir.foreach(folder) do |x|
+def non_system_folder(folder, x)
     if(File.directory?("#{folder}/#{x}"))
       if !(x == ".." || x == "." || x == ".git") #sub_directories()
-        initialize_submodule("#{folder}/#{x}", object, exist, 'junk')
-        if exist
-          Dir.chdir("#{folder}") do |i|
-            removeFiles_addSubmodule(x, object[:j])
-            commit_andPush(x)
-          end
+end
+def sub_folder_level(folder, object, exist)
+  Dir.foreach(folder) do |x|
+    if(non_system_folder(foler, x))
+      initialize_submodule("#{folder}/#{x}", object, exist, 'junk')
+      if exist
+        Dir.chdir("#{folder}") do |i|
+          removeFiles_addSubmodule(x, object[:j])
+          commit_andPush(x)
         end
       end
     end
@@ -112,10 +114,8 @@ end
 def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would mean that type is "junk"
   if type == "master"
     Dir.foreach(folder) do |x|
-      if(File.directory?("#{folder}/#{x}"))
-        if !(x == ".." || x == "." || x == ".git") #sub_directories()
-	  return 2
-        end
+      if(non_system_folder(foler, x))
+	return 2
       end
     end
   else
@@ -174,8 +174,14 @@ def check_submodulized(environmentFolder, folder)
     return File.exist?('.submodulized')
   end
 end
+	    
+#def building_and_is_not_submodulized
+#end
+#def deleting_and_is_submodulized
+	    
 def automate(environmentFolder, object, exist, type)
   #Below logic needs to be refactored
+  #if(building_and_is_not_submodulized || deleting_and_is_submodulized)
   if (exist && !check_submodulized(environmentFolder, object[:f])) || (!exist && check_submodulized(environmentFolder, object[:f]))
     if exist
       clone_master(environmentFolder, object)
