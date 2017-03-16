@@ -6,7 +6,7 @@ class Inputs
 	def self.inputsToUser(folder = nil, master = nil, junk = nil)
 		inputs = Inputs.new
 		if folder.nil? && master.nil? && junk.nil?
-			folder = inputs.folderName()
+			folder = Inputs.folderName()
 			master = {user: inputs.accountName("master"), pass: inputs.accountPassword("master")}
 			junk = {user: inputs.accountName("junk"), pass: inputs.accountPassword("junk")}
 		end

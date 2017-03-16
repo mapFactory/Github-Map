@@ -4,9 +4,8 @@ class Repo_Finder
 #discuss another day... this is currently not returning object rather true false.	
 # -- def self.confirm_folder_exists(folder, object = nil?, folder =  nil?)
 	def confirm_folder_exists(folder, object)
-		return if check_local_directory_exists("#{environmentFolder}", object)
-		#Repo_Finder.check_remote_exists(object[:m], object[:f]) ? clone_master(environmentFolder, object) : notify
-		if check_remote_exists(object[:m], object[:f]) ? clone_master(environmentFolder, object) : notify(environmentFolder, object)
+		return object if check_local_directory_exists("#{folder}", object)
+		check_remote_exists(object[:m], object[:f]) ? clone_master(folder, object) : notify(folder, object)
 	end
 	#  def hidden_confirm_folder_exists				##has not been tested. make sure it works if you ever want to switch
 	# 	if Repo_Finder.check_remote_exists(object[:m], object[:f]) clone()
