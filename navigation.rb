@@ -60,7 +60,7 @@ class Navigator
 		environment = Environment.new
 		navigator = Navigator.new
 		cop = SubmoduleCop.new
-		if (exist && !cop.check_submodulized(environmentFolder, object[:f])) || (!exist && environment.check_submodulized(environmentFolder, object[:f]))
+		if (exist && !cop.check_submodulized(environmentFolder, object[:f])) || (!exist && cop.check_submodulized(environmentFolder, object[:f]))
 			if exist
 				finder = Repo_Finder.new
 				object = finder.confirm_folder_exists(environmentFolder, object)
