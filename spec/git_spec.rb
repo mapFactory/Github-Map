@@ -1,8 +1,10 @@
 require "rspec"
 require 'json'
 require_relative "../methods.rb"
+#every test will have to create an object
 describe "the interactions with local Git repositories" do
 	it "should add github remote to specified folder" do
+		#environment.rb
 		Dir.chdir("Testing") do
 			establish_Origin_repo('1_test_CheckReadmeAndSubdirs', {user: "miketestgit02", pass: "qzfreetf59im"})
 		end
@@ -13,6 +15,7 @@ describe "the interactions with local Git repositories" do
 	end
 
 	it "should replace a folder with a submodule link" do
+		#environment.rb
 		Dir.chdir("Testing") do
 			`mkdir rspec_submodule_example`
 			Dir.chdir('rspec_submodule_example') do
@@ -42,6 +45,7 @@ describe "the interactions with local Git repositories" do
 	end
 
 	it "should create a commit and push it to github" do
+		#environment.rb
 		Dir.chdir("Testing") do
 			`mkdir rspec_submodule_example`
 			Dir.chdir('rspec_submodule_example') do
