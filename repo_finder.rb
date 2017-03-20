@@ -12,7 +12,6 @@ class Repo_Finder
 	# 	elsif Repo_Finder.check_local_directory_exists("#{environmentFolder}", object) 
 	# 	else notify
 	# end 
-	private 
 
 	def clone_master(environmentFolder, object)
 		Dir.chdir("#{environmentFolder}") do
