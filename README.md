@@ -30,4 +30,5 @@ bundle install rake<br>
 <br>&emsp;&emsp;&emsp;rake de_submodulize_folder &emsp;&emsp;&emsp;&emsp;#revert back
 
 <br><br>
+
 <b>Copyright (c) 2017, Ryan Murphy and Michael Dimmitt</b>
