@@ -1,8 +1,8 @@
 require "rspec"
 require 'json'
-require_relative "../environment.rb"
-require_relative "../repo_finder.rb"
-require_relative "../inputs.rb"
+require_relative "../app/src/environment.rb"
+require_relative "../app/src/repo_finder.rb"
+require_relative "../app/src/inputs.rb"
 #  ???????????.rb
 describe "the interactions with the Github API" do
 	inputs = Inputs.new
