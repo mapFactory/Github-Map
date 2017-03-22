@@ -48,20 +48,20 @@ task :create_sub_repos, [:master_repo_dir, :github_user] do |t, args|
 =======
 require 'io/console'
 require 'json'
-#require_relative 'methods.rb'
 require_relative 'inputs.rb'
 require_relative 'repo_finder.rb'
 require_relative 'backup.rb'
 require_relative 'environment.rb'
 require_relative 'navigation.rb'
 #Live tasks
-task :Test_printInputs do object = inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
+task :Test_printInputs do object = Inputs.inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
 task :check_delete_repo do #task created for testing purposes to show deleting of repo.
-	folder = folderName()
-	object = inputsToUser()#check is inside inputs()
+	folder = Inputs.folderName()
+	object = Inputs.inputsToUser()#check is inside inputs()
 	folder = folder.gsub("\n", "")#should this be inside folderName()?
 	Dir.chdir("my_repositories/#{folder}") do |x|
-		create_Repo_From_subFolder(folder, object[:m])
+		environment = Environment.new
+		environment.create_Repo_From_subFolder(folder, object[:m])
 		`curl -u #{object[:m][:user]}:#{object[:m][:pass]} -X DELETE  https://api.github.com/repos/{#{object[:m][:user]}}/{#{folder}}`
 	end
 end
@@ -179,19 +179,20 @@ end
 task :delete_submodulize_folder do
 =======
 task :test_check_delete_repo do
-	folder = folderName()
-	object = inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")#check is inside inputs()
+	folder = Inputs.folderName
+	object = Inputs.inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")#check is inside inputs()
 	folder = folder.gsub("\n", "")
 	username = object[:m][:user]
 	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
 	Dir.chdir("my_repositories/#{folder}") do |x|
-		create_Repo_From_subFolder(folder, object[:m])
+		environment = Environment.new
+		environment.create_Repo_From_subFolder(folder, object[:m])
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
 	end
 end
 task :update_submodule_backup do
-	folder = folderName
-	submodule_backup("my_repositories", folder)
+	folder = Inputs.folderName
+	Backups.submodule_backup("my_repositories", folder)
 end
 task :submodulize_folder do
 <<<<<<< HEAD
