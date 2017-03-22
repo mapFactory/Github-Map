@@ -1,4 +1,3 @@
-
 class SubmoduleCop
   def unset_remove_submodulized(environmentFolder, folder)
     Dir.chdir("#{environmentFolder}/#{folder}") do |x|
