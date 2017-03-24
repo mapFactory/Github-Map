@@ -15,7 +15,7 @@ bundle install rake<br>
 #### Convert your repo with many subfolders into a map... with the subfolders as repo's
 <br>(0) Clone Github-Map
 <br>(1) cd into Github-Map
-<br>(2) <b>command:</b> rake submodulize_folder
+<br>(2) <b>command:</b> rake Github_Map
 <br>... we will clone the folder on the primary account input into the program.
 <br>and change the folder structure into a Github Map so that subfolders are made repos. And the organization <br>persists with the resultant repository having submodules to those previous subfolders.
 
@@ -23,11 +23,11 @@ bundle install rake<br>
 <br>... say you have a large number of repositories on github. But no context showing how repositories are related.
 <br>(0) make a directory... topmost folder what you would like to call the map... subfolders the repositories <br>online that fit into that classification.
 <br>(1) clone Github-Map
-<br>(2) <b>command:</b> mv "yourFolderName" "Github-Map/my_repositories" 
+<br>(2) <b>command:</b> mv "yourFolderName" "Github-Map/my_repositories"
 <br>(3) make note of the repository name because you will be prompted for it in the program.
 <br>(4)<b>commands:</b>
-<br>&emsp;&emsp;&emsp;rake submodulize_folder &emsp;&emsp;&emsp;&emsp;&emsp;#build
-<br>&emsp;&emsp;&emsp;rake de_submodulize_folder &emsp;&emsp;&emsp;&emsp;#revert back
+<br>&emsp;&emsp;&emsp;rake Github_Map &emsp;&emsp;&emsp;&emsp;&emsp;#build
+<br>&emsp;&emsp;&emsp;rake de_Github_Map &emsp;&emsp;&emsp;&emsp;#revert back
 
 <br><br>
 
