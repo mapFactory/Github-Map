@@ -14,7 +14,7 @@ class Repo_Finder
 	# end 
 
 	def clone_master(environmentFolder, object)
-		Dir.chdir("#{environmentFolder}") do
+		Dir.chdir("../#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
 		end 
@@ -34,6 +34,6 @@ class Repo_Finder
 		response["message"].nil?
 	end
 	def check_local_directory_exists(folder, object)
-		File.directory?("#{folder}/#{object[:f]}")
+		File.directory?("../#{folder}/#{object[:f]}")
 	end
 end

@@ -29,7 +29,7 @@ class Navigator
   def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would mean that type is "junk"
     if type == "master"
       Dir.foreach(folder) do |x|
-        if(File.directory?("#{folder}/#{x}"))
+        if(File.directory?("../#{folder}/#{x}"))
                 if !(x == ".." || x == "." || x == ".git") #sub_directories()
                         return 2
       end end end
@@ -71,7 +71,7 @@ class Navigator
         cop.unset_remove_submodulized(environmentFolder, object[:f]) 
       end
 
-      navigator.initialize_submodule("#{environmentFolder}/#{object[:f]}", object, exist, type, environment)
+      navigator.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, environment)
       Backups.submodule_backup(environmentFolder, object[:f])
     else
       puts "Folder is already submodulized. No actions taken."
