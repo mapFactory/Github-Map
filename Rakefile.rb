@@ -5,9 +5,15 @@ require_relative 'repo_finder.rb'
 require_relative 'backup.rb'
 require_relative 'environment.rb'
 require_relative 'navigation.rb'
+
 #Live tasks
-task :Test_printInputs do object = Inputs.inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}"; end
-task :check_delete_repo do #task created for testing purposes to show deleting of repo.
+# Section 1, works; needed?
+task :Test_printInputs do #checks_credentials but not if valid repo
+	object = Inputs.inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}";
+end
+
+# not working because no longer going through automate
+task :check_delete_repo do #broken; needed? #task show deleting of repo.
 	folder = Inputs.folderName()
 	object = Inputs.inputsToUser()#check is inside inputs()
 	folder = folder.gsub("\n", "")#should this be inside folderName()?
@@ -17,7 +23,7 @@ task :check_delete_repo do #task created for testing purposes to show deleting o
 		`curl -u #{object[:m][:user]}:#{object[:m][:pass]} -X DELETE  https://api.github.com/repos/{#{object[:m][:user]}}/{#{folder}}`
 	end
 end
-task :test_check_delete_repo do
+task :test_check_delete_repo do #broken; needed?  #quick test task for above
 	folder = Inputs.folderName
 	object = Inputs.inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")#check is inside inputs()
 	folder = folder.gsub("\n", "")
@@ -29,18 +35,29 @@ task :test_check_delete_repo do
 		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
 	end
 end
+
+# Section 2 needed?
 task :update_submodule_backup do
 	folder = Inputs.folderName
 	Backups.submodule_backup("my_repositories", folder)
 end
-task :submodulize_folder do
+# the above should be written into the rspec with a print flag enabled.
+# to print all these details.
+
+
+# Section 3 works...
+#(1)need to talk goals for desubmodulize in terms of backup
+#(2)
+#production Tasks
+task :submodulize_folder do #works
 	object = Inputs.inputsToUser()
 	Navigator.automate("my_repositories", object, exist = true, type = 'master')
 end
 task :desubmodulize_folder do
-	object = inputsToUser()
+	object = Inputs.inputsToUser()
 	Navigator.automate("my_repositories", object, exist = false, type= 'master')
 end
+
 #test Tasks
 task :test_submodulize_folder do
 	#folder1 = "1_test_CheckReadmeAndSubdirs"#folder1; #folder1				= "new_folder";#folder1				= "2_test_MasterReponoSub"; #folder1				= "e_test_NoReadme"
