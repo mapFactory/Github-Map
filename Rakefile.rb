@@ -5,8 +5,13 @@ require_relative 'repo_finder.rb'
 require_relative 'backup.rb'
 require_relative 'environment.rb'
 require_relative 'navigation.rb'
+require_relative 'update.rb'
 
 #production Tasks
+task :update_submodule_folder_history do
+	object = inputsToUser()
+	update_repository("my_repositories", object, type = 'master')
+end 
 task :submodulize_folder do #works
 	object = Inputs.inputsToUser()
 	Navigator.automate("my_repositories", object, exist = true, type = 'master')
