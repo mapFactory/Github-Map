@@ -6,48 +6,6 @@ require_relative 'backup.rb'
 require_relative 'environment.rb'
 require_relative 'navigation.rb'
 
-#Live tasks
-# Section 1, works; needed?
-task :Test_printInputs do #checks_credentials but not if valid repo
-	object = Inputs.inputsToUser();puts "#{object[:m][:user]}#{object[:m][:pass]}#{object[:j][:user]}#{object[:j][:pass]}";
-end
-
-# not working because no longer going through automate
-task :check_delete_repo do #broken; needed? #task show deleting of repo.
-	folder = Inputs.folderName()
-	object = Inputs.inputsToUser()#check is inside inputs()
-	folder = folder.gsub("\n", "")#should this be inside folderName()?
-	Dir.chdir("my_repositories/#{folder}") do |x|
-		environment = Environment.new
-		environment.create_Repo_From_subFolder(folder, object[:m])
-		`curl -u #{object[:m][:user]}:#{object[:m][:pass]} -X DELETE  https://api.github.com/repos/{#{object[:m][:user]}}/{#{folder}}`
-	end
-end
-task :test_check_delete_repo do #broken; needed?  #quick test task for above
-	folder = Inputs.folderName
-	object = Inputs.inputsToUser("miketestgit02", "miketestgit02", "qzfreetf59im", "qzfreetf59im")#check is inside inputs()
-	folder = folder.gsub("\n", "")
-	username = object[:m][:user]
-	password = object[:m][:pass]#these two commands are for preliminary test purposes for this particular task.
-	Dir.chdir("my_repositories/#{folder}") do |x|
-		environment = Environment.new
-		environment.create_Repo_From_subFolder(folder, object[:m])
-		`curl -u #{username}:#{password} -X DELETE  https://api.github.com/repos/{#{username}}/{#{folder}}`
-	end
-end
-
-# Section 2 needed?
-task :update_submodule_backup do
-	folder = Inputs.folderName
-	Backups.submodule_backup("my_repositories", folder)
-end
-# the above should be written into the rspec with a print flag enabled.
-# to print all these details.
-
-
-# Section 3 works...
-#(1)need to talk goals for desubmodulize in terms of backup
-#(2)
 #production Tasks
 task :submodulize_folder do #works
 	object = Inputs.inputsToUser()
