@@ -1,11 +1,11 @@
 require 'io/console'
 require 'json'
-require_relative 'inputs.rb'
-require_relative 'repo_finder.rb'
-require_relative 'backup.rb'
-require_relative 'environment.rb'
-require_relative 'navigation.rb'
-require_relative 'update.rb'
+require_relative 'src/inputs.rb'
+require_relative 'src/repo_finder.rb'
+require_relative 'src/backup.rb'
+require_relative 'src/environment.rb'
+require_relative 'src/navigation.rb'
+require_relative 'src/update.rb'
 
 #production Tasks
 task :update_submodule_folder_history do

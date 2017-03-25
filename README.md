@@ -1,4 +1,9 @@
 # Release Date: April 1
+## For Developers
+All code is included inside app folder.
+<br>Rakefile in app folder contains the commands that run the program.
+<br>All other classes currently in app/src.
+
 ## Why Github-Maps?
 It started after looking at someones Repository on Github called "RandomPrograms". The repository consisted of subfolders and each subfolder having subfolders. A context was presented by this "RandomPrograms" repository; however, a user could not star and self organize the projects they appreciated.
 

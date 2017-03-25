@@ -1,6 +1,6 @@
 require "rspec"
 require 'json'
-require_relative "../environment.rb"
+require_relative "../app/src/environment.rb"
 #every test will have to create an object
 describe "the interactions with local Git repositories" do
 	it "should add github remote to specified folder" do
