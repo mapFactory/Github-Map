@@ -1,6 +1,6 @@
-require_relative 'repo_finder.rb'
+require_relative 'folder_setup.rb'
 require_relative 'backup.rb'
-class Environment 
+class GithubModifier 
   def create_Repo_From_subFolder(folder, account)
       start_repo_locally()
       create_online_repo(folder, account)

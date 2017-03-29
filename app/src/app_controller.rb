@@ -1,14 +1,14 @@
 require_relative 'environment.rb'
-require_relative 'submodule_cop.rb'
-require_relative 'repo_finder.rb'
+require_relative 'prior_mapped.rb'
+require_relative 'folder_setup.rb'
 require_relative 'backup.rb'
-require_relative 'not_empty_cop.rb'
-class Navigator
+require_relative 'make_readme.rb'
+class AppController
 # def surface_folder_level(folder, account, exist)
   def surface_folder_level(folder, account, exist, environment)
     Dir.chdir("#{folder}") do |i| #current_directory()
       if exist
-        NotEmptyCop.touchwithReadme(folder)
+        MakeReadme.touchwithReadme(folder)
         environment.create_Repo_From_subFolder(folder, account)
       else
         environment.delete_online_repo(folder, account)
@@ -58,20 +58,21 @@ class Navigator
   def self.automate(environmentFolder, object, exist, type)
     #Below logic needs to be refactored
     environment = Environment.new
-    navigator = Navigator.new
-    cop = SubmoduleCop.new
-    if (exist && !cop.check_submodulized(environmentFolder, object[:f])) || (!exist && cop.check_submodulized(environmentFolder, object[:f]))
+    controller = AppController.new
+    mapped = PriorMapped.new
+
+    setup = Folder_Setup.new
+    object = setup.confirm_folder_exists(environmentFolder, object)
+    if (exist && !mapped.check_submodulized(environmentFolder, object[:f])) || (!exist && mapped.check_submodulized(environmentFolder, object[:f]))
       if exist
-        finder = Repo_Finder.new
-        object = finder.confirm_folder_exists(environmentFolder, object)
         #Repo_Finder.clone_master(environmentFolder, object)
         Backups.Backup(environmentFolder, object[:f])
-        cop.set_touch_submodulized(environmentFolder, object[:f]) 
+        mapped.set_touch_submodulized(environmentFolder, object[:f]) 
       else
-        cop.unset_remove_submodulized(environmentFolder, object[:f]) 
+        mapped.unset_remove_submodulized(environmentFolder, object[:f]) 
       end
 
-      navigator.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, environment)
+      controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, environment)
       Backups.submodule_backup(environmentFolder, object[:f])
     else
       puts "Folder is already submodulized. No actions taken."
