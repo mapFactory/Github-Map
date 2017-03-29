@@ -17,19 +17,19 @@ class GithubModifier
   
   #local folder stucture
   def start_repo_locally
-    puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
+    `git init`;`git add *`;`git commit -m "Initial Commit"`;
   end
   def establish_Origin_repo(folder, account)
-      puts `git remote rm origin`
+      `git remote rm origin`
       `git remote add origin https://#{account[:user]}:#{account[:pass]}@github.com/#{account[:user]}/#{folder.split('/')[-1]}.git`
   end #do not puts anything that shows credentials  
   def commit_andPush(x)
-    puts `git rm --cached -rf #{x}`
-    puts `git add *`;`git commit -m "Add submodule folder #{x}"`;`git push origin master --quiet`
+    `git rm --cached -rf #{x}`
+    `git add *`;`git commit -m "Add submodule folder #{x}"`;`git push origin master --quiet`
   end
   def removeFiles_addSubmodule(x, junk)
-    puts `git rm --cached -rf #{x}`
-    puts `git submodule add https://github.com/#{junk[:user]}/#{x}`
+    `git rm --cached -rf #{x}`
+    `git submodule add https://github.com/#{junk[:user]}/#{x}`
   end
 
   #github interaction

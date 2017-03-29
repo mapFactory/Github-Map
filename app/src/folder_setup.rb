@@ -15,8 +15,8 @@ class Folder_Setup
 
 	def clone_master(environmentFolder, object)
 		Dir.chdir("../#{environmentFolder}") do
-			puts `rm -rf #{object[:f]}`
-			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
+			`rm -rf #{object[:f]}`
+			`git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
 		end #submodulized file works if user cloned wrong and put in my repository.
 		    #therefore full file system did notY
 		object
@@ -32,9 +32,18 @@ class Folder_Setup
 		#account = (type == "master" ? object[:m] : object[:j])
 		response = `curl -i https://api.github.com/repos/#{account[:user]}/#{folder}`
 		response = JSON.parse(response[response.index('{')..-1])
-		response["message"].nil?
+		remote_exists = response["message"].nil?
+
+		if remote_exists
+			puts "Folder found on Github"
+		end
+		remote_exists
 	end
 	def check_local_directory_exists(folder, object)
-		File.directory?("../#{folder}/#{object[:f]}")
+		directory_exists = File.directory?("../#{folder}/#{object[:f]}")
+		if directory_exists
+			puts "Folder found in local directory"
+		end
+		directory_exists
 	end
 end
