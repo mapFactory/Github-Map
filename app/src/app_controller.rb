@@ -71,10 +71,6 @@ class AppController
     if exist
       Backups.Backup(environmentFolder, object[:f])
     end
-
     controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
-    Backups.submodule_backup(environmentFolder, object[:f])
-    
   end
-
 end
