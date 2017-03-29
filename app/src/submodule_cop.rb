@@ -17,4 +17,3 @@ class SubmoduleCop
     end
   end
 end
-#ensures repo is not submodulized twice and assures that the Github Map submodulized it

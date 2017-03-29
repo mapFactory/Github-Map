@@ -6,9 +6,9 @@ navigation.rb
 
 
   repo_finder.rb     line 65
-  submodule_cop.rb   line 66 
+  submodule_cop.rb   line 66
   backup.rb          line 69
-  environment.rb     line 75
+  environment.rb     line 75 --all git commands
   not_empty_cop.rb   line 11
 update.rb
 ```

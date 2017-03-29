@@ -1,6 +1,6 @@
 require_relative 'repo_finder.rb'
 require_relative 'backup.rb'
-class Environment 
+class Environment
   def create_Repo_From_subFolder(folder, account)
       start_repo_locally()
       create_online_repo(folder, account)
@@ -10,19 +10,16 @@ class Environment
       else
         puts "Failed to create remote repo for #{folder}."
       end
-      #check_remote_exist() *check remote exists here* warning: adds additional ping
-      #puts folder
-      
   end# creates empty repo using name of given folder as repo name.# folder name is collected by spliting "folder" and string after last "/"
-  
+
   #local folder stucture
   def start_repo_locally
     puts `git init`;puts `git add *`;puts `git commit -m "Initial Commit"`;
   end
   def establish_Origin_repo(folder, account)
-      puts `git remote rm origin`
-      `git remote add origin https://#{account[:user]}:#{account[:pass]}@github.com/#{account[:user]}/#{folder.split('/')[-1]}.git`
-  end #do not puts anything that shows credentials  
+    puts `git remote rm origin`
+    `git remote add origin https://#{account[:user]}:#{account[:pass]}@github.com/#{account[:user]}/#{folder.split('/')[-1]}.git`
+  end #do not puts anything that shows credentials
   def commit_andPush(x)
     puts `git rm --cached -rf #{x}`
     puts `git add *`;`git commit -m "Add submodule folder #{x}"`;`git push origin master --quiet`
@@ -44,6 +41,6 @@ class Environment
     response = `curl -i https://api.github.com/repos/#{account[:user]}/#{folder}`
     response = JSON.parse(response[response.index('{')..-1])
     response["message"].nil?
-  end 
+  end
 
 end
