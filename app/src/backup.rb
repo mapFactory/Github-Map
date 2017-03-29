@@ -10,7 +10,8 @@ class Backups
   def self.Backup(environmentFolder, folder)
       Dir.chdir("../#{environmentFolder}/") do |x|
         if !File.directory?("backup_#{folder}")
-          puts `cp -r #{folder} backup_#{folder}` 
+          `cp -r #{folder} backup_#{folder}` 
+          puts "Backup of #{folder} created in #{environmentFolder}."
         end
       end
   end# Copy never to be touched till end... if copy already exists it should be ignored or copy itself not be overridden

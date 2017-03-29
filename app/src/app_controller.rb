@@ -57,6 +57,8 @@ class AppController
       # check_repo_exist(account)if_object[j]
       surface_folder_level(folder, account, exist, environment)
       sub_folder_level(folder, object, exist, environment)
+
+      puts exist ? "#{folder} added to map" : "#{folder} removed from map"
     else puts "No subfolders found in this repository. No actions were taken."
   end end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
   
@@ -65,12 +67,18 @@ class AppController
     github_modifier = GithubModifier.new
     controller = AppController.new
     mapped = Prior_Mapped.new
-
     setup = Folder_Setup.new
+
     object = setup.confirm_folder_exists(environmentFolder, object)
     if exist
       Backups.Backup(environmentFolder, object[:f])
     end
     controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
+
+    if exist
+      puts "Folder added to Github at https://github.com/#{object[:m][:user]}/#{object[:f]}"
+    else
+      puts "Folder removed from Github"
+    end
   end
 end
