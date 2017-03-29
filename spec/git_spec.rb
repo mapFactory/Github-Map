@@ -1,11 +1,11 @@
 require "rspec"
 require 'json'
-require_relative "../app/src/environment.rb"
+require_relative "../app/src/github_modifier.rb"
 #every test will have to create an object
 describe "the interactions with local Git repositories" do
 	it "should add github remote to specified folder" do
 		#environment.rb
-		environment = Environment.new
+		environment = GithubModifier.new
 		Dir.chdir("Testing") do
 			environment.establish_Origin_repo('1_test_CheckReadmeAndSubdirs', {user: "miketestgit02", pass: "qzfreetf59im"})
 		end
@@ -17,7 +17,7 @@ describe "the interactions with local Git repositories" do
 
 	it "should replace a folder with a submodule link" do
 		#environment.rb
-		environment = Environment.new
+		environment = GithubModifier.new
 		Dir.chdir("Testing") do
 			`mkdir rspec_submodule_example`
 			Dir.chdir('rspec_submodule_example') do
@@ -46,7 +46,7 @@ describe "the interactions with local Git repositories" do
 
 	it "should create a commit and push it to github" do
 		#environment.rb
-		environment = Environment.new
+		environment = GithubModifier.new
 		Dir.chdir("Testing") do
 			`mkdir rspec_submodule_example`
 			Dir.chdir('rspec_submodule_example') do
