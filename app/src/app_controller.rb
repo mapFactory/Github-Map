@@ -68,20 +68,12 @@ class AppController
 
     setup = Folder_Setup.new
     object = setup.confirm_folder_exists(environmentFolder, object)
-    if (exist && !mapped.check_submodulized(environmentFolder, object[:f])) || (!exist && mapped.check_submodulized(environmentFolder, object[:f]))
-      if exist
-        #Repo_Finder.clone_master(environmentFolder, object)
-        Backups.Backup(environmentFolder, object[:f])
-        #mapped.set_touch_submodulized(environmentFolder, object[:f]) 
-      else
-        #mapped.unset_remove_submodulized(environmentFolder, object[:f]) 
-      end
-
-      controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
-      Backups.submodule_backup(environmentFolder, object[:f])
-    else
-      puts "Folder is already submodulized. No actions taken."
+    if exist
+      Backups.Backup(environmentFolder, object[:f])
     end
+
+    controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
+    Backups.submodule_backup(environmentFolder, object[:f])
     
   end
 
