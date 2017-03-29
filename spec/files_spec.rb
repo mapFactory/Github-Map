@@ -1,5 +1,4 @@
 require "rspec"
-require_relative "../app/src/submodule_cop.rb"
 require_relative "../app/src/backup.rb"
 describe "the interactions with files" do
 	it "should create a backup of specified submodule folders" do

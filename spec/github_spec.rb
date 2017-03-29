@@ -1,13 +1,13 @@
 require "rspec"
 require 'json'
-require_relative "../app/src/environment.rb"
-require_relative "../app/src/repo_finder.rb"
+require_relative "../app/src/github_modifier.rb"
+require_relative "../app/src/folder_setup.rb"
 require_relative "../app/src/inputs.rb"
 #  ???????????.rb
 describe "the interactions with the Github API" do
 	inputs = Inputs.new
-	finder = Repo_Finder.new
-	environment = Environment.new
+	finder = Folder_Setup.new
+	environment = GithubModifier.new
 	let(:check_result) { inputs.check({user: "miketestgit02", pass: "qzfreetf59im"}, 'master') }
 	let(:check_invalid_result) { inputs.check({user: "miketestgit02", pass: "qzfreetf59i"}, 'master', {user: "miketestgit02", pass: "qzfreetf59im"}) }
 
