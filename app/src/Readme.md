@@ -1,5 +1,6 @@
 listed in order they are called in the stack:
 
+```
 inputs.rb
 navigation.rb
 
@@ -10,3 +11,4 @@ navigation.rb
   environment.rb     line 75
   not_empty_cop.rb   line 11
 update.rb
+```
