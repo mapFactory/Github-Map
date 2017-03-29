@@ -1,5 +1,5 @@
 require_relative 'inputs.rb'
-class Repo_Finder
+class Folder_Setup
 	
 #discuss another day... this is currently not returning object rather true false.	
 # -- def self.confirm_folder_exists(folder, object = nil?, folder =  nil?)
@@ -17,7 +17,8 @@ class Repo_Finder
 		Dir.chdir("../#{environmentFolder}") do
 			puts `rm -rf #{object[:f]}`
 			puts `git clone https://github.com/#{object[:m][:user]}/#{object[:f]}`
-		end 
+		end #submodulized file works if user cloned wrong and put in my repository.
+		    #therefore full file system did notY
 		object
 	end
 	def notify(folder, object)

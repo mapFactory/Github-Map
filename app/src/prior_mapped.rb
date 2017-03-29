@@ -1,4 +1,4 @@
-class SubmoduleCop
+class Prior_Mapped
   def unset_remove_submodulized(environmentFolder, folder)
     Dir.chdir("../#{environmentFolder}/#{folder}") do |x|
       `rm .submodulized`
