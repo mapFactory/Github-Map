@@ -28,11 +28,16 @@ class AppController
   end end end   end   end end
   def master_has_subfolders_or_is_subfolder_already(folder, type)#subfolder would mean that type is "junk"
     if type == "master"
+      puts "master"
+      has_subfolders = false
       Dir.foreach(folder) do |x|
-        if(File.directory?("../#{folder}/#{x}"))
-                if !(x == ".." || x == "." || x == ".git") #sub_directories()
-                        return 2
-      end end end
+        if(File.directory?("#{folder}/#{x}"))
+          if !(x == ".." || x == "." || x == ".git")
+            has_subfolders = true
+          end
+        end
+      end
+      return has_subfolders
     else
       return true
     end
@@ -67,9 +72,9 @@ class AppController
       if exist
         #Repo_Finder.clone_master(environmentFolder, object)
         Backups.Backup(environmentFolder, object[:f])
-        mapped.set_touch_submodulized(environmentFolder, object[:f]) 
+        #mapped.set_touch_submodulized(environmentFolder, object[:f]) 
       else
-        mapped.unset_remove_submodulized(environmentFolder, object[:f]) 
+        #mapped.unset_remove_submodulized(environmentFolder, object[:f]) 
       end
 
       controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
