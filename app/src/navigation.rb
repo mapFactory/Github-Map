@@ -60,10 +60,11 @@ class Navigator
     environment = Environment.new
     navigator = Navigator.new
     cop = SubmoduleCop.new
+
+    finder = Repo_Finder.new
+    object = finder.confirm_folder_exists(environmentFolder, object)
     if (exist && !cop.check_submodulized(environmentFolder, object[:f])) || (!exist && cop.check_submodulized(environmentFolder, object[:f]))
       if exist
-        finder = Repo_Finder.new
-        object = finder.confirm_folder_exists(environmentFolder, object)
         #Repo_Finder.clone_master(environmentFolder, object)
         Backups.Backup(environmentFolder, object[:f])
         cop.set_touch_submodulized(environmentFolder, object[:f]) 
