@@ -1,4 +1,4 @@
-require_relative 'environment.rb'
+require_relative 'github_modifier.rb'
 require_relative 'prior_mapped.rb'
 require_relative 'folder_setup.rb'
 require_relative 'backup.rb'
@@ -57,9 +57,9 @@ class AppController
   
   def self.automate(environmentFolder, object, exist, type)
     #Below logic needs to be refactored
-    environment = Environment.new
+    github_modifier = GithubModifier.new
     controller = AppController.new
-    mapped = PriorMapped.new
+    mapped = Prior_Mapped.new
 
     setup = Folder_Setup.new
     object = setup.confirm_folder_exists(environmentFolder, object)
@@ -72,7 +72,7 @@ class AppController
         mapped.unset_remove_submodulized(environmentFolder, object[:f]) 
       end
 
-      controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, environment)
+      controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
       Backups.submodule_backup(environmentFolder, object[:f])
     else
       puts "Folder is already submodulized. No actions taken."
