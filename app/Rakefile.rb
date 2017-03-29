@@ -1,7 +1,6 @@
 require 'io/console'
 require 'json'
 require_relative 'src/inputs.rb'
-require_relative 'src/repo_finder.rb'
 require_relative 'src/backup.rb'
 require_relative 'src/environment.rb'
 require_relative 'src/app_controller.rb'
