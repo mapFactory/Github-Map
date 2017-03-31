@@ -43,6 +43,23 @@ class AppController
     end
     #if the return has not happened by now it is presumably false.
   end
+  def confirm_expected_subfolders_exist(folder, environmentFolder)
+    backup_folder_count = folder_counter("../#{environmentFolder}/backup_#{folder}")
+    current_folder_count = folder_counter("../#{environmentFolder}/#{folder}")
+    current_folder_count == backup_folder_count
+  end
+  def folder_counter(folder)
+    count = 0
+    Dir.foreach(folder) do |x|
+      if !(x == ".." || x == "." || x == ".git") && File.directory?("#{folder}/#{x}")
+        count += 1
+        Dir.chdir("#{folder}") do |i|
+          count += folder_counter("#{x}")
+        end
+      end
+    end
+    count
+  end
   def initialize_submodule(folder, object, exist, type, environment)
     # if exist && type == "master"
     #   clone_master(folder.split('/').first, object)
@@ -76,7 +93,11 @@ class AppController
     controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
 
     if exist
-      puts "Folder added to Github at https://github.com/#{object[:m][:user]}/#{object[:f]}"
+      if controller.confirm_expected_subfolders_exist(object[:f], environmentFolder)
+        puts "Folder added to Github at https://github.com/#{object[:m][:user]}/#{object[:f]}"
+      else
+        puts "Folder corrupt. Please run de_github_map and revert to your backup"
+      end
     else
       puts "Folder removed from Github"
     end
