@@ -16,11 +16,11 @@ class AppController
     end
   end
   #def sub_folder_level(folder, object, exist)
-  def sub_folder_level(folder, object, exist, environment)
+  def sub_folder_level(folder, object, exist, environment, revert)
     Dir.foreach(folder) do |x|
       if(File.directory?("#{folder}/#{x}"))
               if !(x == ".." || x == "." || x == ".git") #sub_directories()
-                      initialize_submodule("#{folder}/#{x}", object, exist, 'junk', environment)
+                      initialize_submodule("#{folder}/#{x}", object, exist, 'junk', environment, revert)
                       if exist
                         Dir.chdir("#{folder}") do |i|
                               environment.removeFiles_addSubmodule(x, object[:j])
@@ -60,7 +60,7 @@ class AppController
     end
     count
   end
-  def initialize_submodule(folder, object, exist, type, environment)
+  def initialize_submodule(folder, object, exist, type, environment, revert)
     # if exist && type == "master"
     #   clone_master(folder.split('/').first, object)
     #   Backup(folder.split('/').first, object[:f])
@@ -69,17 +69,25 @@ class AppController
     # if !exist && type == "master"
     #   unset_submodulized(folder.split('/').first, folder.split('/')[-1]) 
     # end
+    if revert
+      Dir.chdir(folder) do |i|
+        `rm -rf .gitmodules`
+        if type != "master"
+          `rm -rf .git`
+        end
+      end
+    end
     if master_has_subfolders_or_is_subfolder_already(folder, type)
       account = (type == "master" ? object[:m] : object[:j])
       # check_repo_exist(account)if_object[j]
       surface_folder_level(folder, account, exist, environment)
-      sub_folder_level(folder, object, exist, environment)
+      sub_folder_level(folder, object, exist, environment, revert)
 
       puts exist ? "#{folder} added to map" : "#{folder} removed from map"
     else puts "No subfolders found in this repository. No actions were taken."
   end end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
   
-  def self.automate(environmentFolder, object, exist, type)
+  def self.automate(environmentFolder, object, exist, type, revert)
     #Below logic needs to be refactored
     github_modifier = GithubModifier.new
     controller = AppController.new
@@ -90,7 +98,11 @@ class AppController
     if exist
       Backups.Backup(environmentFolder, object[:f])
     end
-    controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier)
+
+    if revert
+      setup.recursive_clone_master(environmentFolder, object)
+    end
+    controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier, revert)
 
     if exist
       if controller.confirm_expected_subfolders_exist(object[:f], environmentFolder)

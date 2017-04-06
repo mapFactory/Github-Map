@@ -21,6 +21,12 @@ class Folder_Setup
 		    #therefore full file system did notY
 		object
 	end
+	def recursive_clone_master(environmentFolder, object)
+		Dir.chdir("../#{environmentFolder}") do
+			`rm -rf #{object[:f]}`
+			`git clone --recursive https://github.com/#{object[:m][:user]}/#{object[:f]}`
+		end
+	end
 	def notify(folder, object)
 		puts "did not find repository #{object[:f]}"
 	    object[:f] = Inputs.folderName(object[:f])
