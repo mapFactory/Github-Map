@@ -70,12 +70,7 @@ class AppController
     #   unset_submodulized(folder.split('/').first, folder.split('/')[-1]) 
     # end
     if revert
-      Dir.chdir(folder) do |i|
-        `rm -rf .gitmodules`
-        if type != "master"
-          `rm -rf .git`
-        end
-      end
+      GithubModifier.remove_git_from_folder(folder, type)
     end
     if master_has_subfolders_or_is_subfolder_already(folder, type)
       account = (type == "master" ? object[:m] : object[:j])

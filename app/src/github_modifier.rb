@@ -14,7 +14,14 @@ class GithubModifier
       #puts folder
       
   end# creates empty repo using name of given folder as repo name.# folder name is collected by spliting "folder" and string after last "/"
-  
+  def self.remove_git_from_folder(folder, type)
+    Dir.chdir(folder) do |i|
+      `rm -rf .gitmodules`
+      if type != "master"
+        `rm -rf .git`
+      end
+    end
+  end
   #local folder stucture
   def start_repo_locally
     `git init`;`git add *`;`git commit -m "Initial Commit"`;
