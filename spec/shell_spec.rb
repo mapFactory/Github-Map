@@ -5,7 +5,7 @@ require_relative '../app/src/app_controller.rb'
 describe "rake commands" do 
 
 	it "test map should put repo on Github" do
-		Dir.chdir("app") do 
+		Dir.chdir("spec/Testing") do 
 			object = Inputs.inputsToUser("4_test_RecursiveClone" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
 			AppController.automate("Testing",object, exist = true, type= 'junk', false)
 			finder = Folder_Setup.new
@@ -15,7 +15,7 @@ describe "rake commands" do
 	end
 
 	it "test map should put remove from Github" do
-		Dir.chdir("app") do 
+		Dir.chdir("spec/Testing") do 
 			object = Inputs.inputsToUser("4_test_RecursiveClone" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
 			AppController.automate("Testing",object, exist = false, type= 'junk', false)
 			finder = Folder_Setup.new
@@ -25,7 +25,7 @@ describe "rake commands" do
 	end
 	
 	it "test map should revert map to original and remove from Github" do
-		Dir.chdir("app") do 
+		Dir.chdir("spec/Testing") do 
 			object = Inputs.inputsToUser("4_test_RecursiveClone" ,master = {user: "miketestgit02", pass: "qzfreetf59im"},junk = {user: "miketestgit02", pass: "qzfreetf59im"})
 			AppController.automate("Testing",object, exist = true, type= 'junk', false)
 			AppController.automate("Testing",object, exist = false, type= 'junk', true)
