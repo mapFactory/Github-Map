@@ -47,6 +47,7 @@ class Folder_Setup
 	end
 	def check_local_directory_exists(folder, object)
 		directory_exists = File.directory?("../#{folder}/#{object[:f]}")
+		#directory_exists = File.directory?("#{folder}/#{object[:f]}")
 		if directory_exists
 			puts "Folder found in local directory"
 		end

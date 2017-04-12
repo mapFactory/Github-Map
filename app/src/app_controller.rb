@@ -97,6 +97,7 @@ class AppController
     if revert
       setup.recursive_clone_master(environmentFolder, object)
     end
+
     controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier, revert)
 
     if exist
