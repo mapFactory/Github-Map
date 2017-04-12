@@ -6,11 +6,11 @@ describe "the interactions with local Git repositories" do
 	it "should add github remote to specified folder" do
 		#environment.rb
 		environment = GithubModifier.new
-		Dir.chdir("Testing") do
+		Dir.chdir("spec/Testing") do
 			environment.establish_Origin_repo('1_test_CheckReadmeAndSubdirs', {user: "miketestgit02", pass: "qzfreetf59im"})
 		end
 
-		Dir.chdir("Testing/1_test_CheckReadmeAndSubdirs") do
+		Dir.chdir("spec/Testing/1_test_CheckReadmeAndSubdirs") do
 			expect(`git remote --v`).to include("https://miketestgit02:qzfreetf59im@github.com/miketestgit02/1_test_CheckReadmeAndSubdirs.git")
 		end
 	end
@@ -18,7 +18,7 @@ describe "the interactions with local Git repositories" do
 	it "should replace a folder with a submodule link" do
 		#environment.rb
 		environment = GithubModifier.new
-		Dir.chdir("Testing") do
+		Dir.chdir("spec/Testing") do
 			`mkdir rspec_submodule_example`
 			Dir.chdir('rspec_submodule_example') do
 				`mkdir rspec_submodule_folder`
@@ -47,7 +47,7 @@ describe "the interactions with local Git repositories" do
 	it "should create a commit and push it to github" do
 		#environment.rb
 		environment = GithubModifier.new
-		Dir.chdir("Testing") do
+		Dir.chdir("spec/Testing") do
 			`mkdir rspec_submodule_example`
 			Dir.chdir('rspec_submodule_example') do
 				`git init`
