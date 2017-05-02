@@ -5,7 +5,8 @@ require_relative 'backup.rb'
 require_relative 'make_readme.rb'
 class AppController
 # def surface_folder_level(folder, account, exist)
-  def surface_folder_level(folder, account, exist, environment)
+  def surface_folder_level(folder, account, exist)
+    environment = GithubModifier.new
     Dir.chdir("#{folder}") do |i| #current_directory()
       if exist
         MakeReadme.touchwithReadme(folder)
@@ -16,11 +17,12 @@ class AppController
     end
   end
   #def sub_folder_level(folder, object, exist)
-  def sub_folder_level(folder, object, exist, environment, revert)
+  def sub_folder_level(folder, object, exist, revert)
+    environment = GithubModifier.new
     Dir.foreach(folder) do |x|
       if(File.directory?("#{folder}/#{x}"))
               if !(x == ".." || x == "." || x == ".git") #sub_directories()
-                      initialize_submodule("#{folder}/#{x}", object, exist, 'junk', environment, revert)
+                      initialize_submodule("#{folder}/#{x}", object, exist, 'junk', revert)
                       if exist
                         Dir.chdir("#{folder}") do |i|
                               environment.removeFiles_addSubmodule(x, object[:j])
@@ -60,7 +62,7 @@ class AppController
     end
     count
   end
-  def initialize_submodule(folder, object, exist, type, environment, revert)
+  def initialize_submodule(folder, object, exist, type, revert)
     # if exist && type == "master"
     #   clone_master(folder.split('/').first, object)
     #   Backup(folder.split('/').first, object[:f])
@@ -75,18 +77,15 @@ class AppController
     if master_has_subfolders_or_is_subfolder_already(folder, type)
       account = (type == "master" ? object[:m] : object[:j])
       # check_repo_exist(account)if_object[j]
-      surface_folder_level(folder, account, exist, environment)
-      sub_folder_level(folder, object, exist, environment, revert)
+      surface_folder_level(folder, account, exist)
+      sub_folder_level(folder, object, exist, revert)
 
       puts exist ? "#{folder} added to map" : "#{folder} removed from map"
     else puts "No subfolders found in this repository. No actions were taken."
   end end# folder is full path to folder e.g.(github_repo_submodulizer/my_repositories/test/folder)
   
-  def self.automate(environmentFolder, object, exist, type, revert)
+  def automate(environmentFolder, object, exist, type, revert)
     #Below logic needs to be refactored
-    github_modifier = GithubModifier.new
-    controller = AppController.new
-    mapped = Prior_Mapped.new
     setup = Folder_Setup.new
 
     object = setup.confirm_folder_exists(environmentFolder, object)
@@ -98,10 +97,10 @@ class AppController
       setup.recursive_clone_master(environmentFolder, object)
     end
 
-    controller.initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, github_modifier, revert)
+    initialize_submodule("../#{environmentFolder}/#{object[:f]}", object, exist, type, revert)
 
     if exist
-      if controller.confirm_expected_subfolders_exist(object[:f], environmentFolder)
+      if confirm_expected_subfolders_exist(object[:f], environmentFolder)
         puts "Folder added to Github at https://github.com/#{object[:m][:user]}/#{object[:f]}"
       else
         puts "Folder corrupt. Please run de_github_map and revert to your backup"

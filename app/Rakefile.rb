@@ -12,9 +12,11 @@ task :update_submodule_folder_history do
 end
 task :github_map do #works
 	object = Inputs.inputsToUser()
-	AppController.automate("my_repositories", object, exist = true, type = 'master')
+	controller = AppController.new
+	controller.automate("my_repositories", object, exist = true, type = 'master')
 end
 task :de_github_map do
 	object = Inputs.inputsToUser()
-	AppController.automate("my_repositories", object, exist = false, type= 'master')
+	controller = AppController.new
+	controller.automate("my_repositories", object, exist = false, type= 'master')
 end

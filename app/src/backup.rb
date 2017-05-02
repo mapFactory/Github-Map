@@ -1,4 +1,4 @@
-class Backups
+module Backups
   def self.submodule_backup(environmentFolder, folder)
     Dir.chdir("../#{environmentFolder}/") do |x|
         if File.directory?("submodulebackup_#{folder}")

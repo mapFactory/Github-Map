@@ -1,4 +1,4 @@
-class MakeReadme
+module MakeReadme
   def self.touchwithReadme(folder)
     if Dir["#{folder}/*"].empty?
       `touch README.md`
