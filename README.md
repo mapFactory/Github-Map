@@ -16,10 +16,20 @@ install ruby ... #ruby instructions to be added.
 bundle install rake<br>
 <br>verify the install <b>command:</b> rake --version; ruby -v;
 </pre>
+# Run the demo?
+<pre>
+git clone https://github.com/mapFactory/Github-Map.git
+cd Github-Map/app
+rake demo_github_map
+</pre>
+
+Wait for program to complete then check github.com/miketestgit02 to ensure it created.
+<pre>rake demo_de_github_map</pre>
+Wait for program to complete then check github.com/miketestgit02 to ensure it deleted.
 ## How to use.
 #### Convert your repo with many subfolders into a map... with the subfolders as repo's
 <br>(0) Clone Github-Map
-<br>(1) cd into Github-Map
+<br>(1) cd Github-Map/app
 <br>(2) <b>command:</b> rake Github_Map
 <br>... we will clone the folder on the primary account input into the program.
 <br>and change the folder structure into a Github Map so that subfolders are made repos. And the organization <br>persists with the resultant repository having submodules to those previous subfolders.
