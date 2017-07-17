@@ -28,21 +28,26 @@ Wait for program to complete then check github.com/miketestgit02 to ensure it cr
 Wait for program to complete then check github.com/miketestgit02 to ensure it deleted.
 ## How to use.
 #### Convert your repo with many subfolders into a map... with the subfolders as repo's
-<br>(0) Clone Github-Map
-<br>(1) cd Github-Map/app
-<br>(2) <b>command:</b> rake Github_Map
-<br>... we will clone the folder on the primary account input into the program.
-<br>and change the folder structure into a Github Map so that subfolders are made repos. And the organization <br>persists with the resultant repository having submodules to those previous subfolders.
+<pre>
+git clone https://github.com/mapFactory/Github-Map.git;
+cd Github-Map/my_repositories;
+git clone your_repository_name.git; 
+                                   #... or, move folder in question into Github-Map/my_repositories
+				   #... or mkdir's inside my repositories.
+rake github_map
+</pre>
+... we will clone the folder on the primary account input into the program.
+<br>and change the folder structure into a Github Map so that subfolders are made repos. And the organization 
+<br>persists with the resultant repository having submodules to those previous subfolders.
 
-#### Make a map locally and we will build it for you.
-<br>... say you have a large number of repositories on github. But no context showing how repositories are related.
+<pre>rake de_Github_Map   #revert back</pre><br>
+### Make a map locally and we will build it for you.
+... say you have a large number of repositories on github. But no context showing how repositories are related.
 <br>(0) make a directory... topmost folder what you would like to call the map... subfolders the repositories <br>online that fit into that classification.
-<br>(1) clone Github-Map
-<br>(2) <b>command:</b> mv "yourFolderName" "Github-Map/my_repositories"
-<br>(3) make note of the repository name because you will be prompted for it in the program.
-<br>(4)<b>commands:</b>
-&emsp;&emsp;&emsp;<pre>rake Github_Map;     #build
-rake de_Github_Map   #revert back</pre>
+<pre>
+rake Github_Map;     #build
+rake de_Github_Map   #revert back
+</pre>
 
 
 <b>Copyright (c) 2017, Ryan Murphy and Michael Dimmitt</b>
