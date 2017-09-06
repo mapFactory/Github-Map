@@ -7,7 +7,7 @@ All code is included inside app folder.
 ## Why Github-Maps?
 It started after looking at someone's Repository on Github called "RandomPrograms". The repository consisted of subfolders and each subfolder having subfolders. A context was presented by this "RandomPrograms" repository; however, a user could not star and self-organize the projects they appreciated.
 
-The initial mission of the program is to go through each sub folder in that repository and convert it into a github map with subfolders becoming repositories - either on your account or an account with a moniker "Star" at the end of it. The user will be left with a map. Where projects can be accessed and a user is free to star what they enjoy.
+The initial mission of the program is to go through each subfolder in that repository and convert it into a github map with subfolders becoming repositories - either on your account or an account with a moniker "Star" at the end of it. The user will be left with a map. Where projects can be accessed and a user is free to star what they enjoy.
 
 The second part of the project is that most people have repositories correctly organized on Github. However, there is no context between projects. A quick look at github.com/google shows 961 repositories. But a user curious in finding something unique and not something popular to contribute toward would need to read all 961 repositories. Github-Maps solves this problem by allowing a repo to provide context for other repositories.
 ## How to install.
