@@ -5,7 +5,7 @@ All code is included inside app folder.
 <br>All other classes currently in app/src.
 
 ## Why Github-Maps?
-It started after looking at someones Repository on Github called "RandomPrograms". The repository consisted of subfolders and each subfolder having subfolders. A context was presented by this "RandomPrograms" repository; however, a user could not star and self organize the projects they appreciated.
+It started after looking at someone's Repository on Github called "RandomPrograms". The repository consisted of subfolders and each subfolder having subfolders. A context was presented by this "RandomPrograms" repository; however, a user could not star and self-organize the projects they appreciated.
 
 The initial mission of the program is to go through each subfolder in that repository and convert it into a github map with subfolders becoming repositories - either on your account or an account with a moniker "Star" at the end of it. The user will be left with a map. Where projects can be accessed and a user is free to star what they enjoy.
 
@@ -23,9 +23,9 @@ cd Github-Map/app
 rake demo_github_map
 </pre>
 
-Wait for program to complete then check github.com/miketestgit02 to ensure it created.
+Wait for the program to complete then check github.com/miketestgit02 to ensure it created.
 <pre>rake demo_de_github_map</pre>
-Wait for program to complete then check github.com/miketestgit02 to ensure it deleted.
+Wait for the program to complete then check github.com/miketestgit02 to ensure it deleted.
 ## How to use.
 #### Convert your repo with many subfolders into a map... with the subfolders as repo's
 <pre>
